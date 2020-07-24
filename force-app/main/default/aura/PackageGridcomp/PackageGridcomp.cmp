@@ -1,0 +1,235 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,force:hasRecordId,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,forceCommunity:searchInterface" 
+                controller="Packagecontroller"
+                access="global">
+    
+    <!--aura event handler -->
+   <!-- <aura:registerEvent name="CartMapEvt" type="c:CartMapEvent"/>
+    <aura:registerEvent name="cartEvt" type="c:CartEvent"/>
+    <aura:registerEvent name="tabEvt" type="c:TabEvent"/>
+    <aura:registerEvent name="offerToAddonPage" type="c:offerToAddonPage"/>
+    <aura:registerEvent name="selectedOfrAdnEvent" type="c:SelectedOfferAddonEvent"/>
+    <aura:handler action="{!c.setStoredData}" event="c:AddonsToOfferPage"/>
+    <aura:handler action="{!c.changeCart}" event="c:selectedOfferEvent"/>
+    <aura:handler action="{!c.changeCartSite}" event="c:selectedSiteServiceEvent"/>
+    <aura:handler action="{!c.orderchangeCart}" event="c:OrderSelectedOfferEvent"/>
+     <aura:handler action="{!c.orderchangeCartForAddon}" event="c:OrderSelectedAddonEvent"/>
+    <aura:handler action="{!c.deleteOffer}" event="c:deleteOfferEvent"/>
+    <aura:handler action="{!c.setSelectedService}" event="c:addSiteEvent"/> 
+    <aura:handler action="{!c.setSelectedServiceForFirstTime}" event="c:findserviceEvent"/> 
+    <aura:handler action="{!c.setSelectedServiceForFirstTimeFeasibility}" event="c:findserviceEventFeasibility"/> 
+    <aura:handler action="{!c.setAttributeValue}" event="c:NewAttributeEvent"/> 
+    <aura:handler action="{!c.callGetPackageDetails}" event="c:callGetPackageDetailsEvent"/>-->
+
+    
+  
+    <aura:attribute name="CartMapDataForOffer" type="List"/>
+    
+   
+    
+    
+    
+    
+    <!--aura init handler-->
+    <aura:handler name="init" value="{!this}" action="{!c.doinit}" />
+    
+    
+    
+    <!--aura attribute-->
+    
+     <aura:attribute name="selPackageOfferIdFromAddonPage" type="String" />
+     <aura:attribute name="childprodDetFlag" type="Object"/>
+    <aura:attribute name="demodataProducts" type="Object"/>
+    <aura:attribute name="democolumnsProduct" type="Object"/>
+    <aura:attribute name="gridOriginalData" type="Object" />
+    <aura:attribute name="paginationList" type="Object" />
+    <aura:attribute name="prevList" type="Object" /> 
+    <aura:attribute name="PackageObj" type="Object"/>
+    <aura:attribute name="gridData" type="Object" />
+    <aura:attribute name="Package" type="Object"/>
+    <aura:attribute name="gridExpandedRows" type="Object" />
+    <aura:attribute name="AttributeList" type="Object[]"/>
+    <aura:attribute name="headerRow" type="Object"/>
+    <aura:attribute name="addonsMap" type="Object[]"/>
+    <aura:attribute name="existOfferMap" type="Object[]"/>
+    <aura:attribute name="offerList" type="Object[]" />
+    <aura:attribute name="existServiceOfferMap" type="Object[]"/>
+    <aura:attribute name="cartMapForMultipleServicesGridData" type="List" />
+    <aura:attribute name="servicewithoffergridmap"  type="List" />    
+    <aura:attribute name="ServiceOfferMap"  type="List" />
+    <aura:attribute name="ServiceOfferMapSite"  type="List" />
+     <aura:attribute name="addonServiceOfferMap"  type="List" />
+      <aura:attribute name="addonProductsMap"  type="List" />
+    <aura:attribute name="SerCartMap"  type="List" />
+    <aura:attribute name="searchSelectedPkges" type="List" />
+    <aura:attribute name="allSelectedPkges" type="List" />
+    <aura:attribute name="allPackage" type="List" />
+    <aura:attribute name="gridColumns" type="List" /> 
+    <aura:attribute name="Cart" type="List" />
+    <aura:attribute name="CartMap" type="List" />
+    <aura:attribute name="CartData" type="List" />  
+    <aura:attribute name="removedCartData" type="List" /> 
+    <aura:attribute name="pageDataList" type="List" />
+    <aura:attribute name="CartNames" type="List" />
+    <aura:attribute name="attr" type="List"/>
+    <aura:attribute name="selectedPackageNamesInPage" type="List" />
+    <aura:attribute name="selectedPackageNames" type="List" />
+    <aura:attribute name="existAttrData" type="List"/>
+    <aura:attribute name="selectPackageList" type="List"/>
+    <aura:attribute name="selectedNameIdMap" type="Set"/>
+    <aura:attribute name="lastPageNumber" type="boolean"  default="true"/>
+    <aura:attribute name="isSending" type="boolean" default="false"/>
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="Nodata" type="boolean" default="false"/>
+    <aura:attribute name="addToCart" type="boolean" default="false"/>
+    <aura:attribute name="hidecheckbox" type="boolean" default="false"/>
+    <aura:attribute name="response" type="boolean" default="false"/>
+    <aura:attribute name="isAddonOpen" type="boolean" default="false"/>
+    <aura:attribute name="prevListFlag" type="Boolean"  default="false"/>
+    <aura:attribute name="afetrClickOfViewCart" type="Boolean" default="false"/>
+     <aura:attribute name="selectedSiteIdAvailable" type="Boolean" default="false"/>
+    <aura:attribute name="showSearch" type="boolean" default="false"/>
+    <aura:attribute name="searchKey" type="String" />
+    <aura:attribute name="attrHeader" type="String" default="Attributes" />
+    <aura:attribute name="PkgName" type="String" />
+    <aura:attribute name="prodSpecId" type="String" />
+    <aura:attribute name="prodSpecName" type="String" />
+    <aura:attribute name="selTabId" type="string" />
+    <aura:attribute name="quoteRecId" type="String"/>
+    <aura:attribute name="selectedService" type="String" default=""/>
+    <aura:attribute name="startPage" type="Integer" /> 
+    <aura:attribute name="endPage" type="Integer"/>
+    <aura:attribute name="totalRecords" type="Integer"/>
+    <aura:attribute name="pageSize" type="Integer" default="5"/>
+    <aura:attribute name="currentVersion" type="Decimal"/>
+    <aura:attribute name="isGetPkgDetailsCalled" type="boolean" default="false"/>
+    <aura:attribute name="selpackageName" type="String"/>
+    <aura:attribute name="offerFromPkgDetails" type="Object"/>
+    <aura:attribute name="selectedSrvcMap" type="String"/>
+    <aura:attribute name="selectedSiteId" type="String"/> 
+    <aura:attribute name="selectedCity" type="String"/>
+    <aura:attribute name="selectedSitetype" type="String"/>
+     <aura:attribute name="requestType" type="String" />
+     <aura:attribute name="setAddonFlag" type="boolean" />
+      <aura:attribute name="OrderCartDataMapForOffer"  type="List" /> 
+   
+    <!-- Spinner Start, show the loading screen while 
+                       Client side controller(JS) is communicating with Server Side(APEX) controller -->
+    <aura:if isTrue="{!v.isSending}">
+        <div class="slds-spinner_container">
+            <div class="slds-spinner--brand slds-spinner slds-spinner--large" role="alert">
+                <span class="slds-assistive-text">   </span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
+    <!--   Spinner End -->
+    <!--<div class="slds-grid slds-grid_align-end">
+                        <div class="slds-col">
+    <aura:if isTrue="{!v.requestType == 'Order'}">
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <lightning:button label="Associate Addons" onclick="{!c.associateAddons}" variant="brand"
+                                                                                     iconPosition='right' /> &nbsp;&nbsp;&nbsp;
+    </aura:if>              
+        </div>
+    </div>-->
+   
+    <!-- Showing the PackageGrid -->
+    <aura:if isTrue="{!v.showSearch}">
+        <div style="font-size:15px;font-weight:bold"> </div>
+        
+        <div class="demo-only-spacing demo-only-padding">
+            <div class="slds-p-top_x-small"> 
+                <table width="100%" > 
+                   <td width="84%"><ui:inputText  value="{!v.searchKey}" size="10" placeholder=" " keyup="{!c.checkKey}" />
+                    </td>
+                   &nbsp; &nbsp;&nbsp;  
+                    <td width="8%"> <lightning:button label=" " onclick="{!c.searchFn}" variant="brand"
+                                                      iconPosition='left'/></td>
+                    &nbsp; &nbsp;&nbsp;  
+                    <td width="8%"> <lightning:button label=" " onclick="{!c.clearFn}" variant="brand"
+                                                      iconPosition='left'/></td>
+                </table>
+            </div>
+        </div>
+        
+        <div class="demo-only-spacing demo-only-padding">
+            <div class="slds-p-top_small"></div>
+        </div>
+        <div class="slds-media__body">
+       <!--  <c:OfferGridComp offerList="{!v.paginationList}" isParent="true" getPkgDetailsCalled ="{!v.isGetPkgDetailsCalled}" onclickEventName = "e.com_tcs_telecom:selectedOfferEvent"/> -->
+            <!-- <aura:if isTrue="{!v.isGetPkgDetailsCalled}">
+                   <c:collapisbleSectionFirst offerList="{!v.paginationList}"/>
+                  <aura:set attribute="else">
+                      <c:OfferGridComp offerList="{!v.paginationList}" isParent="true" getPkgDetailsCalled ="{!v.isGetPkgDetailsCalled}" onclickEventName = "e.com_tcs_telecom:selectedOfferEvent"/>
+                 </aura:set>
+            </aura:if> -->
+            <!--<aura:if isTrue="{!v.selectedSitetype =='Sitetype'}">
+               <c:collapisbleSectionFirstSitecomp requestType="{!v.requestType}" selpackageName="{!v.selpackageName}" childExpandFlag="{!v.childExpandFlag}" offerList="{!v.paginationList}" quoteId="{!v.quoteRecId}" selectedservice="{!v.selectedservice}" selectedsiteId ="{!v.selectedsiteId }" selectedSitetype ="{!v.selectedSitetype}" />-->
+        <!--<aura:set attribute="else">-->
+         <!--<c:collapisbleSectionFirst requestType="{!v.requestType}" selpackageName="{!v.selpackageName}" childExpandFlag="{!v.isGetPkgDetailsCalled}" offerList="{!v.paginationList}" quoteId="{!v.quoteRecId}"/> -->
+              <!--</aura:set>
+              </aura:if>-->
+        </div>
+        
+        <div class="demo-only-spacing demo-only-padding">
+            <div class="slds-p-top_small"></div>
+        </div>
+        <div class="slds-align_absolute-center">    <lightning:layout>
+            <aura:if isTrue="{!v.startPage &gt; 0}">
+                <lightning:button label=" "  
+                                  onclick="{!c.previous}" variant="brand" 
+                                  iconName='utility:back'/>
+                
+                <aura:set attribute="else">
+                    <lightning:button label=" "  
+                                      onclick="{!c.previous}" variant="brand" 
+                                      iconName='utility:back' disabled="true"/>
+                </aura:set>
+                
+            </aura:if>
+            &nbsp; &nbsp; &nbsp;
+            <aura:if isTrue=" ">
+                <lightning:button label=""
+                                  onclick="{!c.next}"  variant="brand"
+                                  iconName='utility:forward' iconPosition='right'/>
+                <aura:set attribute="else">
+                    <lightning:button label=""
+                                      onclick="{!c.next}"  variant="brand"
+                                      iconName='utility:forward' iconPosition='right' disabled="true"/>
+                </aura:set>
+            </aura:if> 
+            
+            </lightning:layout>
+        </div>
+        <!-- Grid ended--> 
+        
+        <!--Use aura:if tag to display Model Box, on the bese of conditions. [isOpen boolean attribute] -->   
+        <aura:if isTrue="{!v.isOpen}">
+            <div role="dialog" tabindex="-1" aria-labelledby="header99" class="slds-modal slds-fade-in-open ">
+                <div class="slds-modal__container">
+                    {!v.body}
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+        </aura:if>
+        <div class="demo-only-spacing demo-only-padding">
+            <div class="slds-p-top_medium"></div>
+        </div>
+        
+        <div class="slds-align_absolute-center">  
+            <lightning:layout >
+                
+                &nbsp; &nbsp; &nbsp;
+                
+                <!--<aura:if isTrue="{!v.isAddonOpen}">
+                    <c:SelectPackageAddons />
+                </aura:if>-->
+               
+                <!--<aura:if isTrue="{!v.setAddonFlag}">
+                    <c:SelectPackageAddons addonsMap='{!v.CartMapDataForOffer}'/>
+                </aura:if>-->
+            </lightning:layout>
+        </div>
+    </aura:if>
+    
+</aura:component>

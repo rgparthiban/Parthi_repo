@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "..\\..\\..\\Parthi_SFDC"
+		}
+	],
+	"settings": {
+		"eslint.nodePath": "c:\\Users\\pc\\.vscode\\extensions\\salesforce.salesforcedx-vscode-lwc-46.2.0\\node_modules"
+	}
+}

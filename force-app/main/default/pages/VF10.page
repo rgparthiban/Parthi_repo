@@ -1,0 +1,5 @@
+<apex:page >
+  <apex:pageBlockSection >
+  This is test page where used to dispaly items
+  </apex:pageBlockSection>
+</apex:page>

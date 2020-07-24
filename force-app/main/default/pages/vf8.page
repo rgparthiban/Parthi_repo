@@ -1,0 +1,31 @@
+<apex:page Controller="Admin_Tracking_Controller" showHeader="false" sidebar="false">
+    <style>
+        //removed for post
+    </style>
+
+    <apex:form style="background-color:#D8DDE7;height:350px" >
+        <div class="h1">
+            Admin Time Tracking
+        </div>
+        <div class="b1">       
+            <apex:outputText >Activity:</apex:outputText>
+            <br/><apex:inputField value="{!adminTracking.Activity__c}"/>
+            <br/><apex:outputText >Account:</apex:outputText>
+            <br/><apex:inputField value="{!adminTracking.Account__c}"/>
+            <br/><apex:outputText >The Hub:</apex:outputText>
+            <br/><apex:inputField value="{!adminTracking.The_Hub__c}"/>
+            <br/><apex:outputText >Carrier:</apex:outputText>
+            <br/><apex:inputField value="{!adminTracking.Carrier__c}"/>
+            <br/><apex:outputText >Time Utilized:</apex:outputText>
+            <br/><apex:inputField value="{!adminTracking.Time_Utilized__c}"/>
+            <br/><apex:outputText >Notes:</apex:outputText>
+            <br/><apex:inputField value="{!adminTracking.Tracking_Notes__c}" style="resize:none;height:50px;"/>
+        </div> 
+
+        <div class="b2" align="center" draggable="false" > 
+            <apex:commandLink value="Save Time" action="{!save}" target="_self" styleClass="btn" style="text-decoration:none;padding:4px;" />
+        </div> 
+
+    </apex:form>
+
+</apex:page>

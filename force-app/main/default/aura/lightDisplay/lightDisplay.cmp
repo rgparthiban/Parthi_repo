@@ -1,0 +1,31 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,lightning:actionOverride,force:lightningQuickAction,force:appHostable"  controller = "UpdateDetails">
+    <aura:attribute name="message" type="string"></aura:attribute>
+    <aura:registerEvent name="lightDisplayEvent" type="c:lightDisplayEvent"></aura:registerEvent>
+     <aura:handler name="init" value="{!this}" action="{!c.doinit}"></aura:handler>
+     <aura:attribute name="selTabId" type="string" default="2" />
+    <aura:handler name="change" value="{!v.key}" action="{!c.selectTab}"/>
+    <aura:attribute name="key" type="String" />
+    <aura:attribute name="condition" type="boolean" default="false" />
+    
+    <lightning:tabset aura:id="tabs" selectedTabId="1" >
+        <lightning:tab label="Item One" id="one">
+            Sample Content One
+        </lightning:tab>
+        <lightning:tab label="Item Two" id="two" >
+            Sample Content Two
+        </lightning:tab>
+        <lightning:tab label="Item Three" id="three">
+            Sample Content Three
+        </lightning:tab>
+    </lightning:tabset>
+
+    <br/><br/><br/>
+
+    <lightning:button variant="brand" label="ChangeValue" onclick="{!c.handleClick}" />
+     <lightning:button label="submit"  onclick="{!c.testException}"/>
+     
+   
+     <div  style="width:100%;" aura:id="searchResDelivery" class="slds-form-element slds-lookup slds-is-close" data-select="single">
+         <ui:inputText   keyup="{!c.doKeyUp}"  updateOn="keyup" aura:id="searchkeycontDelivery" /></div>
+
+</aura:component>

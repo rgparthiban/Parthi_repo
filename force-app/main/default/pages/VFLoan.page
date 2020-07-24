@@ -1,0 +1,45 @@
+<apex:page controller="LoanCtrl" standardStylesheets="true">
+<apex:form >
+
+<apex:PageBlock title="Apply loan by filling the below form">
+<apex:pageBlockSection columns="2">
+<apex:outputText >Type</apex:outputText>
+<apex:selectradio value="{!selectedLtype}">
+<apex:selectOptions value="{!TypeListvalues}"></apex:selectOptions>
+</apex:selectradio>
+<apex:outputtext >Loan Category::</apex:outputtext>
+<apex:selectList size="1" value="{!str}" id="cat" >
+<apex:selectoptions value="{!Categoryvalues}"></apex:selectoptions>
+</apex:selectList>
+<apex:outputText >Loan Holder Name::</apex:outputText>
+<apex:inputtext id="HolderName" value="{!loan.Name__c}"/>
+<apex:outputText >Email::</apex:outputText>
+<apex:inputtext id="email" value="{!loan.email__c}"/>
+<apex:outputText >Contact::</apex:outputText>
+<apex:inputtext id="contact" value="{!loan.phone__c}"/>
+<apex:outputText >Amount</apex:outputText>
+<apex:inputtext id="amount" value="{!loan.Amount__c}"/>
+<apex:outputText >Approved</apex:outputText>
+<apex:inputcheckbox id="app" value="{!approve}"/>
+
+</apex:pageblockSection>
+<apex:pageBlockButtons >
+<apex:commandButton id="save" value="Save" action="{!save}"/>
+<apex:commandButton id="cancel" value="Cancel"/>
+<apex:commandButton id="approve" value="Approve"/>
+</apex:pageBlockButtons>
+</apex:PageBlock>
+<apex:pageblock title="Loan Details">
+<apex:pageblockTable value="{!LoanList}" var="l">
+<apex:column value="{!l.Name__c}"/>
+<apex:column value="{!l.LoanCategory__c}"/>
+<apex:column value="{!l.LoanType__c}"/>
+<apex:column title="Approved">
+<apex:facet name="header">Approved</apex:facet>
+<apex:inputCheckbox value="{!l.Approved__c}" disabled="true"/></apex:column>
+<apex:column value="{!l.phone__c}"/>
+</apex:pageblockTable>
+</apex:PageBlock>
+
+</apex:form>
+</apex:page>
