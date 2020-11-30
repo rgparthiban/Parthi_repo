@@ -2,6 +2,7 @@ public with sharing class HandlerFindAccount implements BotHandler {
     
     public BotResponse handle(String utterance, String[] params, Map<String, String> session, String fileName, String fileContent) {
         String key = '%' + params[0] + '%';
+        String key2 = '%' + params[0] + '%';
         List<Account> accounts = 
             [SELECT Id, Name, Phone FROM Account
              WHERE Name LIKE :key
