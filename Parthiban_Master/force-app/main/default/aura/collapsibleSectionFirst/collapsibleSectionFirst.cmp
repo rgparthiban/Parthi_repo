@@ -1,0 +1,16 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,lightning:actionOverride,force:lightningQuickAction,forceCommunity:availableForAllPageTypes" access="global">
+   <aura:attribute name="offerList" type="Object[]" />
+   <aura:attribute name="childExpandFlag" type="Boolean"/>
+   <aura:attribute name="selpackageName" type="String"/>
+   <aura:attribute name="quoteId" type="String"/>
+   <aura:attribute name="requestType" type="String"/>
+   
+  <!--<aura:handler name="init" value="{!this}" action="{!c.doInit}" />-->
+    <div class="slds-p-around--large">
+      
+      <aura:iteration items="{!v.offerList}" var="eachOffer">
+         
+        <!--<c:collapisbleSection requestType="{!v.requestType}" selpackageName="{!v.selpackageName}" childExpandFlag="{!v.childExpandFlag}" offer="{!eachOffer}" quoteId="{!v.quoteId}" onclickEventName ="e.com_tcs_telecom:selectedOfferEvent" showAddToCart="true"/>-->
+      </aura:iteration>
+     </div>
+  </aura:component>

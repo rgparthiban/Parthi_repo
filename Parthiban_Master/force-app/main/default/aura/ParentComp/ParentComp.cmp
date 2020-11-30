@@ -1,0 +1,207 @@
+<aura:component implements="flexipage:availableForRecordHome,force:appHostable,force:hasRecordId,lightning:isUrlAddressable,lightning:actionOverride,force:lightningQuickAction,forceCommunity:availableForAllPageTypes" controller="QuoteController" access="global">
+    
+   <!-- <aura:registerEvent name="selectedPackage" type="c:selectedPackage"/>
+    <aura:registerEvent name="renderAddonsEvt" type="c:renderAddonsEvt"/>
+    <aura:registerEvent name="CallViewCartEvt" type="c:CallViewCartEvent"/>  
+    <aura:registerEvent name="findserviceEvent" type="c:findserviceEvent"/>  
+    <aura:registerEvent name="ServiceBasedOfferEvent" type="c:ServiceBasedOfferEvent"/>
+     
+    
+    <aura:handler action="{!c.cartEventData}" event="c:CartEvent" />
+    <aura:handler action="{!c.ServiceOffer}" event="c:CartMapEvent"/>
+    <aura:handler action="{!c.backAddonsToOffer}" event="c:BackToOfferPage"/> 
+    <aura:handler action="{!c.offerToAddonPage}" event="c:offerToAddonPage"/>
+    <aura:handler action="{!c.setAddonsMap}" event="c:selectedAddonsForPackage"/>   
+    <aura:handler action="{!c.loadEventData}" event="c:SelectedOfferAddonEvent"/>
+    <aura:handler name="init" value="{!this}" action="{!c.loadExistingOffers}" />  
+    <aura:handler action="{!c.deleteOffer}" event="c:deleteOfferEvent"/>
+    <aura:handler action="{!c.setStoredData}" event="c:NewShoppingCartInnerToCartEvent"/>
+    <aura:handler action="{!c.loadEventDataAddonSToCart}" event="c:SelectedAddonCartEvent"/>
+    <aura:handler action="{!c.getAllAddonData}" event="c:addonsAfterMergedWithProductsEvent"/>-->
+
+    
+    <aura:attribute name="attr" type="Object[]"/>
+    <aura:attribute name="addonsMap" type="Object[]"/>
+    <aura:attribute name="existOfferMap" type="Object[]"/>
+    <aura:attribute name="addonOfferData" type="Object[]"/>
+    <aura:attribute name="gridOriginalData" type="Object"/>
+    <aura:attribute name="QuoteLineDataMap" type="Object[]"/>
+    <aura:attribute name="defFirstServiceOffer" type="Object" />
+    <aura:attribute name="QuoteLineDataMapTest" type="Object[]"/>
+    <aura:attribute name="QuoteLineDataMapForAddons" type="Object[]"/>
+    <aura:attribute name="ServiceAndOffersQuoteLineDataMap" type="Object[]"/>
+    <aura:attribute name="QuoteLineDataMapAfterAddonsAdded" type="Object[]"/>
+    
+    <aura:attribute name="recordId" type="String" access="global"/>
+     <aura:attribute name="someParam" type="String" access="global"/>
+    <aura:attribute name="quoteId" type="string" access="global"/>
+    <aura:attribute name="selTabId" type="string" default="1"/>
+    <aura:attribute name="mapObject" type="String"/>
+    <aura:attribute name="quoteRecId" type="String"/>
+    <aura:attribute name="classHideCheck" type="String"/>
+    <aura:attribute name="selectedService" type="String" default="default"/>
+    <aura:attribute name="isTabHiddenForCart" type="String" default="slds-show"/> 
+    <aura:attribute name="isTabHiddenForAddon" type="String" default="slds-show"/> 
+    
+    <aura:attribute name="attrs" type="List"/>
+    <aura:attribute name="Cart" type="List" />
+    <aura:attribute name="getPackage" type="List"/>
+    <aura:attribute name="existAttrData" type="List"/>
+    <aura:attribute name="listofservices" type="List"/> 
+    <aura:attribute name="selectPackageList" type="List"/>
+    <aura:attribute name="overridenDataList" type="List"/>
+    <aura:attribute name="listofserviceswithstyle" type="List"/>
+    <aura:attribute name="servicewithoffergridmap"  type="List" />
+    <aura:attribute name="ServiceOfferMap"  type="List" default="[]" />
+    <aura:attribute name="CartMapDataForOffer"  type="List" default="[]" />
+    
+    <aura:attribute name="forSubmit" type="boolean"/>
+    <aura:attribute name="createNewVersion" type="Boolean" default="false" />
+    <aura:attribute name="isSending" type="boolean" default="true"/>
+    <aura:attribute name="forSelProdsTab" type="Boolean" default="true"/>
+    <aura:attribute name="isSendingSpinner" type="boolean" default="true"/>
+    
+    <aura:attribute name="addToCart" type="boolean" default="false"/>
+    <aura:attribute name="cartSpinner" type="boolean" default="false"/>
+    <aura:attribute name="initFlag"  type="Boolean" default="false"/> 
+    <aura:attribute name="showSearch" type="boolean" default="false"/>
+    <aura:attribute name="Likedisable" type="Boolean" default="false"/>
+    <aura:attribute name="forBackAndFwd" type="boolean" default="false"/>
+    <aura:attribute name="viewcartbutton" type="Boolean" default="false"/>
+    <aura:attribute name="parentcompSpinner" type="boolean" default="false"/>
+    <aura:attribute name="afetrClickOfViewCart" type="Boolean" default="false"/>
+    <aura:attribute name="displayShoppingCart"  type="Boolean" default="false" />
+    <aura:attribute name="afetrClickOfProdSelTab" type="Boolean" default="false"/>
+    <aura:attribute name="completeViewCartMethod" type="Boolean" default="false"/>
+    <aura:attribute name="selectedOffersLength" type="Integer" />
+    <aura:attribute name="currentVersion" type="Decimal" default="1"/>
+    <aura:attribute name="neWMap" type="Map" default="{}"/> 
+    
+    <aura:attribute name="displayAddons" type="Boolean" default="false"/>
+      <aura:attribute name="displayPayer" type="Boolean" default="false"/> 
+    <aura:attribute name="displayCart" type="Boolean" default="false"/>
+     <aura:attribute name="fromAssocAddon" type="Boolean" default="false"/>
+    <aura:attribute name="CartMapData"  type="List" default="[]" />
+     <aura:attribute name="addonProductsMap"  type="List" default="[]" />
+    <aura:attribute name="selServiceforAddAddon" type="string"/>
+    <aura:attribute name="selPackageforAddAddon" type="string"/>
+     <aura:attribute name="selProdSpecIdforAddAddon" type="string"/>
+     <aura:attribute name="addoncartDataMap" type="List"/>
+     <aura:attribute name="addToCartInvoked"  type="boolean" default="false"/>
+    <aura:attribute name="CartMapDataForOfferForSelectPkgToAddon"  type="List" default="[]" />
+     <aura:attribute name="addonSelect"  type="boolean" default="false"/>
+    <aura:attribute name="defSelPkg" type="string"/>
+    <!-- <aura:handler action="{!c.getAlreadySelectedOffers}" event="c:ExistOffersStoreEvent"/>
+     <aura:handler action="{!c.getAlreadySelectedOffers}" event="c:ExistOffersStoreEvent"/>
+    <aura:handler action="{!c.getAddonProdsMap}" event="c:OrderaddonProdMapEvent"/>
+     <aura:handler action="{!c.addAddonsToCartNew}" event="c:FromSelectPkgAddonToOrderParentEvent"/>
+    <aura:handler action="{!c.getProductsAndAddonData}" event="c:FromPkgGridToSelectPkgAddonEvent"/>
+     <aura:handler action="{!c.deleteAddonsFromPkg}" event="c:UncheckDeletedAddons"/>-->
+    
+    <aura:if isTrue="{!v.parentcompSpinner}">
+        <div class="slds-spinner_container">
+            <div class="slds-spinner--brand slds-spinner slds-spinner--large" role="alert">
+                <span class="slds-assistive-text"></span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if> 
+    
+    <aura:if isTrue="{!v.isSending == false}">
+        <aura:if isTrue="{!v.cartSpinner == true}">
+            <div class="slds-spinner_container">
+                <div class="slds-spinner-1-brand slds-spinner slds-spinner-1-large" role="alert">
+                    <span class="slds-assistive-text"></span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </aura:if>
+    </aura:if>
+    
+<div class="slds-box" style="border-style:hidden">
+    
+    <lightning:tabset variant="scopped" selectedTabId="{!v.selTabId}">
+        <lightning:tab label="" id="1" onactive="{! c.tabClickPackage }">
+            <div class="slds-grid slds-wrap">
+                
+                <div class="slds-size_1-of-12 ">
+                    <div class="slds-m-top_large">
+                        
+                    </div>
+                </div>
+                <div class="demo-only-spacing demo-only-padding">
+                    
+                    <div class="slds-p-right_medium"></div>
+                    
+                </div>
+                
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                <div class="slds-size_10-of-12">
+                    <div class="slds-grid slds-grid_align-end">
+                        <div class="slds-col">
+                            
+                           
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <lightning:button label="" onclick="{!c.addToCartForMultipleServices}" variant="brand"
+                                                                                     iconPosition='right' /> &nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <lightning:button label="Associate Addons" onclick="{!c.associateAddons}" variant="brand"
+                                                                                     iconPosition='right' /> &nbsp;&nbsp;&nbsp; 
+                            
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="slds-m-left_small">
+                        <c:PackageGridcomp attr = "{!v.attr}" existOfferMap="{!v.QuoteLineDataMap}" 
+                                           quoteRecId="{!v.quoteId}"  Cart="{!v.Cart}"  ServiceOfferMap="{!v.ServiceOfferMap}" 
+                                           addonsMap ="{!v.addonsMap}" currentVersion = "{!v.currentVersion}"
+                                           servicewithoffergridmap="{!v.CartMapDataForOffer}"
+                                           afetrClickOfViewCart="{!v.afetrClickOfViewCart}"
+                                           selectedService="{!v.selectedService}"/>
+                        <br/> 
+                        <br/>
+                    </div>
+                </div>
+            </div>            
+        </lightning:tab>  
+        <!--Add on tab start -->
+         <aura:if isTrue="{!v.displayAddons}">
+         <lightning:tab label="" id="2" onactive="{!c.associateAddons}" class="{!v.isTabHiddenForCart}" aura:id="tabHideForCart">
+             <div class="slds-m-left_small">
+                 <!--addonsMap='{!v.CartMapDataForOffer}'  -->
+                 
+             </div>
+           
+        </lightning:tab>
+        </aura:if>
+   <!--Add on tab End -->
+        
+        <lightning:tab label="" id="3" onactive="{!c.prodSelTab}" class="{!v.isTabHiddenForCart}" aura:id="tabHideForCart" >
+             <aura:if isTrue="{!v.viewcartbutton}">
+            <c:AccordianTest quoteRecId="{!v.quoteId}" selTabId="{!v.selTabId}" allServicesMap="{!v.QuoteLineDataMap}" conMap="{!v.defFirstServiceOffer}"  orgMap="{!v.defFirstServiceOffer}"  attr="{!v.attr}"
+                             forSubmit="true" overrideData="{!v.overridenDataList}" createNewVersion = "{!createNewVersion}"
+                             listofservices="{!v.listofservices}" 
+                             currentVersion = "{!v.currentVersion}" 
+                             bigmapLength = "{!v.selectedOffersLength}"
+                             /> </aura:if>
+            <br/>
+            <div class="demo-only-spacing demo-only-padding">
+                <div class="slds-p-top_large"></div>
+            </div> 
+            <div class="slds-align_absolute-center">
+                <lightning:layout >
+                    <lightning:layoutItem >
+                        <div class="slds-m-left_large">
+                            <lightning:button variant="brand" label="" onclick="{!c.back}" />
+                        </div>
+                    </lightning:layoutItem>  
+                </lightning:layout>    
+            </div>
+        </lightning:tab>
+        <!--<lightning:tab label="{!$Label.c.Quote_Terms_and_Conditions}" id="4"  >
+            <c:Quoteterms />
+        </lightning:tab>-->
+    </lightning:tabset>  
+    </div>
+</aura:component>

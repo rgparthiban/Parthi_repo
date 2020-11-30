@@ -1,0 +1,12 @@
+<apex:page standardController="Account" showheader="true" tabStyle="account">
+<apex:form >
+<apex:pageblock title=" Hello {!$User.FirstName}">
+<apex:pageBlockSection >
+You are viewing {!Account.name}
+<apex:inputfield value="{!account.name}"/>
+<apex:inputtext value="{!account.name}"/>
+</apex:pageBlockSection>
+</apex:pageblock>
+<apex:detail subject="{!account.ownerid}" relatedList="false" title="false" />
+</apex:form>
+</apex:page>

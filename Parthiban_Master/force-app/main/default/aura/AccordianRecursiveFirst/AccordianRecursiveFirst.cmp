@@ -1,0 +1,75 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,lightning:actionOverride,force:lightningQuickAction,forceCommunity:availableForAllPageTypes"
+                controller="FormMap" access="global">
+    
+    
+    <!-- aura event handler -->
+    
+    
+    
+    
+    <!-- aura init handler -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    
+    <!-- aura attribute description -->
+    <aura:attribute name="con" type="Object" />
+    <aura:attribute name="bigconMapUpdate" type="Object"/>
+    <aura:attribute name="QLIMapOrg" type="Object[]"/> 
+    <aura:attribute name="listOfBundlesOfOffer" type="Map"/>
+    <aura:attribute name="dataOverrideList" type="List"/>
+    <aura:attribute name="attr" type="List"/>
+    <aura:attribute name="forSubmit" type="boolean"/>
+    <aura:attribute name="backAndForth" type="Boolean" default="true"/>
+    <aura:attribute name="recursiveCheck" type="Boolean" default="false"/>
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="initCheck" type="boolean" default="false"/>
+    <aura:attribute name="breakflag" type="boolean" default="false"/>
+    <aura:attribute name="childBundleBreakFlag" type="boolean" default="false"/>
+    <aura:attribute name="priceSpinner" type="boolean" default="false"/>
+    <aura:attribute name="selectedService" type="String"/>
+    <aura:attribute name="classCheck" type="String"/>
+    <aura:attribute name="quoteRecId" type="String"/>
+    <aura:attribute name="parentKey" type="String"/>
+    <aura:attribute name="packageKeyofFirstLevel" type="String"/>
+    <aura:attribute name="bigmapLength" type="Integer"/>
+    <aura:attribute name="bigmapIndex" type="Integer"/>
+    <aura:attribute name="currentVersion" type="Decimal"/>
+    
+    <aura:if isTrue="{!v.priceSpinner}">
+        <div class="slds-spinner_container"  >
+            <div class="slds-spinner--brand slds-spinner slds-spinner--large" role="alert">
+                <span class="slds-assistive-text"></span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.initCheck}">
+        <aura:if isTrue="{!v.recursiveCheck}">
+            <aura:iteration items="{!v.con}" var="conObj" indexVar="key" >
+                
+                <c:AccordianRecursiveComp con="{!conObj}" QLIMap = "{!v.QLIMapOrg}" recursiveCheck="{!v.recursiveCheck}"  backAndFwd="{!v.backAndForth}"
+                                          attr="{!v.attr}" overrideList="{!v.dataOverrideList}" quoteRecId="{!v.quoteRecId}" 
+                                          packageKeyofFirstLevel = "{!v.packageKeyofFirstLevel}" breakflag="{!v.breakflag}"
+                                          childBundleBreakFlag="{!v.childBundleBreakFlag}" 
+                                          bigconMapUpdate ="{!v.bigconMapUpdate}" 
+                                          selectedService = "{!v.selectedService}"
+                                          currentVersion = "{!v.currentVersion}"
+                                          bigmapLength = "{!v.bigmapLength}"
+                                          bigmapIndex="{!v.bigmapIndex}"/>
+            </aura:iteration>
+            <aura:set attribute="else">
+                
+                <c:AccordianRecursiveComp con="{!v.con}" QLIMap = "{!v.QLIMapOrg}"  recursiveCheck="{!v.recursiveCheck}"   backAndFwd="{!v.backAndForth}"
+                                          attr="{!v.attr}" overrideList="{!v.dataOverrideList}" quoteRecId="{!v.quoteRecId}" packageKeyofFirstLevel = "{!v.packageKeyofFirstLevel}"
+                                          breakflag="{!v.breakflag}" 
+                                          childBundleBreakFlag="{!v.childBundleBreakFlag}"  
+                                          bigconMapUpdate ="{!v.bigconMapUpdate}" 
+                                          selectedService = "{!v.selectedService}"
+                                          currentVersion = "{!v.currentVersion}"
+                                          bigmapLength = "{!v.bigmapLength}"
+                                          bigmapIndex="{!v.bigmapIndex}"/>
+            </aura:set>
+        </aura:if></aura:if>
+</aura:component>

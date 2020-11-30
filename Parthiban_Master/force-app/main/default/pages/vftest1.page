@@ -1,0 +1,9 @@
+<apex:page standardController="Account" showheader="true" tabStyle="account">
+
+<apex:pageblock title=" Hello">
+<apex:pageBlockSection >
+You are viewing 
+</apex:pageBlockSection>
+</apex:pageblock>
+
+</apex:page>

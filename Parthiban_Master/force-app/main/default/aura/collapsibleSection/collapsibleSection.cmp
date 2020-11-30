@@ -1,0 +1,140 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,lightning:actionOverride,force:lightningQuickAction,forceCommunity:availableForAllPageTypes" access="global">
+  <aura:attribute name="offer" type="Object"/>
+    <aura:attribute name="expandIcon" type="String"/>
+    <aura:attribute name="collapseIcon" type="String"/>
+     <aura:attribute name="recursivecall" type="Boolean"/>
+     <aura:attribute name="childExpandFlag" type="Boolean" />
+     <aura:attribute name="parentExpandFlag" type="Boolean" />
+    <aura:attribute name="showAddToCart" type="Boolean" default="false"/>
+    
+    <aura:attribute name="onclickEventName" type="String"/>
+     <aura:attribute name="compSpinner" type="boolean" default="false"/>
+    <aura:attribute name="selpackageName" type="String"/>
+    <aura:attribute name="quoteId" type="String"/>
+    <aura:attribute name="requestType" type="String"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    
+     <aura:if isTrue="{!v.compSpinner}">
+        <div class="slds-spinner_container">
+            <div class="slds-spinner--brand slds-spinner slds-spinner--large" role="alert">
+                <span class="slds-assistive-text"></span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if> 
+    
+    <aura:if isTrue="{!v.offer.isHeader}">
+       				<table style="width:100%" class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--striped slds-max-medium-table--stacked-horizontal"
+                   role="grid">
+                        <tr>
+                        <td width="25%">{!v.offer.displayName}</td>
+                        <td width="15%">{!v.offer.currency}</td>
+        			 	<td width="13%">{!v.offer.NRC}</td>
+        			 	<td width="13%">{!v.offer.RC}</td>
+                        </tr>
+                     </table>
+   					<aura:set attribute = "else" >
+                   <table width="100%" class="dyn-height" >
+                       <tbody>
+                        <tr width="100%"   style="border-bottom: 1px solid  #ECEBEB ;height:31px; text-align: center;">
+                            
+                   	<td  width="1%">
+                     <div style="cursor: pointer">
+    				<div  onclick="{!c.sectionOne}">
+            		
+                	<div class="slds-float--left ">
+                    <lightning:icon class="slds-show" aura:id="articleOne" iconName="{!v.expandIcon}" size="x-small" alternativeText="Indicates add"/>
+                    <lightning:icon class="slds-hide" aura:id="articleOne" iconName="{!v.collapseIcon}" size="x-small" alternativeText="Indicates dash"/>
+               		</div>
+                    </div>
+        			</div>
+                    </td>
+                      <td width="30%" align="left">
+                          <div style="cursor: pointer">
+      <div class="slds-form-element__icon slds-align-middle" onmouseover="{!c.display}" onmouseout="{!c.displayOut}" title = "{!v.offer.Name}" onclick="{!c.sectionOne}">
+  {!v.offer.Name}
+                             
+          <span class="slds-assistive-text">{!v.offer.Name}</span>
+                              </div></div>
+                         </td>   
+                          <td width="17%" align="left">
+                                {!v.offer.currency}
+                            </td>
+                             <td width="14%" align="left">
+                                   {!v.offer.NRC}
+                                </td>
+                                <td width="14%" align="left">
+                                    {!v.offer.RC }
+                                </td>
+                         <td  width="5%">
+                             
+							 <aura:if isTrue ="{!v.showAddToCart}">                             
+                             <aura:if isTrue ="{!v.parentExpandFlag}">
+                                  <aura:set attribute = "else" > 
+                                      			<aura:if isTrue="{!v.offer.isDisabled}">
+                                      					<div class="slds-col" onmouseover="{!c.display}" onmouseout="{!c.displayOut}"  title = "Add to cart">   
+															<lightning:button class="cartbutton" label = "{!v.offer.Name}"  name = "{!v.offer}"  onclick="{!c.changeCart }" disabled = "{!v.offer.isDisabled}"    >
+                                                          	 	<lightning:icon  class="carticondisable" iconName="custom:custom93" size="small" /> 
+                                                			</lightning:button>
+                                                      		<span class="slds-assistive-text"> Add To Cart</span>
+                                                        </div>
+                                         		 	<aura:set attribute = "else"> 
+                                                  			<div class="slds-col" onmouseover="{!c.display}" onmouseout="{!c.displayOut}"  title = "Add to cart">   
+															<lightning:button class="cartbutton" label = "{!v.offer.Name}"  name = "{!v.offer}"  onclick="{!c.changeCart }" disabled = "{!v.offer.isDisabled}"    >
+                                                           		<lightning:icon  class="carticon" iconName="custom:custom93" size="small" /> 
+                                               				</lightning:button> 
+                                                     				<span class="slds-assistive-text"> Add To Cart</span>
+                                                            </div>
+                                                		</aura:set>
+                               						</aura:if>
+                                 			</aura:set>
+                                 </aura:if> </aura:if>
+										
+                            					</td>
+                        </tr>
+                       </tbody>
+                     </table>
+                	<!--<div class="slds-m-left-1-large">{!v.offer.Name}</div>-->
+            		
+        			</aura:set>
+       				</aura:if>
+        		<div class="slds-hide slds-p-around--medium"  aura:id="articleOne">
+            		<aura:iteration items="{!v.offer._children}" var="childoffer" indexVar="key" >
+  				
+            			<table width="100%" class="dyn-height">
+                 		<tr class="slds-hint-parent"  width="100%"  bgcolor="{!v.p_colorcode}"  style="border-bottom: 1px solid  #ECEBEB ;height:31px; text-align: center">
+                         	<aura:if isTrue="{!childoffer._children.length > 0}"> 
+             				<!--	<c:collapisbleSection childExpandFlag="false" parentExpandFlag="{!v.offer.pkgDetailsCalled}" offer="{!childoffer}"/> -->
+            						<aura:set attribute="else">
+                                        <td width="30%"  data-label="Name">
+                       <div class="slds-form-element__icon slds-align-middle" onmouseover="{!c.display}" onmouseout="{!c.displayOut}" title = "{!childoffer.Name}" onclick="{!c.sectionOne}">
+                                			{!childoffer.Name}
+                                     <span class="slds-assistive-text">{!childoffer.Name}</span>
+                                            </div>
+
+                            			</td>
+                                        <td width="17%" align="left">
+                                        {!childoffer.currency}
+                                		</td>
+                                		<td width="14%" align="left">
+                                        {!childoffer.NRC}
+                                		</td>
+                                		<td width="14%" align="left">
+                                    		{!childoffer.RC }
+                                		</td>
+                                       
+                                        </aura:set>
+            					</aura:if>
+                            
+                            				</tr>
+			
+            </table>
+      		
+         
+            </aura:iteration>
+        </div>
+   
+   
+</aura:component>
