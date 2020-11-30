@@ -1,5 +1,6 @@
 public with sharing class Packagecontroller {
     public static Integer nameLength = 40;
+    public static Integer age=20;
     /*setter injection for OrgDefault config */
 /*    static OrgDefaults__c configGlobal =OrgDefaults__c.getvalues('RestVariables');
     
