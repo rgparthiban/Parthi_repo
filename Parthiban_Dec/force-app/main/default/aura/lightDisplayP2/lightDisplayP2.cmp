@@ -1,0 +1,5 @@
+<aura:component >
+	<aura:handler action ="{!c.eventtest}" event="c:lightDisplayEvent"></aura:handler>
+    <aura:attribute name="message" type="string"></aura:attribute>
+    <h1>Am component 2+{!v.message}</h1>
+</aura:component>

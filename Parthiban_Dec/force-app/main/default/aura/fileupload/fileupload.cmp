@@ -1,0 +1,55 @@
+<!--<aura:component implements ="force:lightningQuickAction,flexipage:availableForRecordHome,force:hasRecordId,lightning:actionOverride,force:appHostable">
+	<aura:attribute name="accept" type="List" default="['.csv', '.xls']"/>
+    <aura:attribute name="multiple" type="Boolean" default="true"/>
+    <aura:attribute name="disabled" type="Boolean" default="false"/>
+        <aura:attribute name="csvFileBody" type="Blob"></aura:attribute>
+        <aura:attribute name="csvstring" type="string"></aura:attribute>
+        <aura:attribute name="csvFileLines" type="string[]"></aura:attribute>
+    
+               <lightning:fileUpload  name="fileUploader"
+                           label= "Demo Upload"
+                           multiple="{!v.multiple}"
+                           accept="{!v.accept}"                          
+                           recordId="{!v.recordId}"
+                                     onuploadfinished="{!c.handleUploadFinished}"/>
+</aura:component>-->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" controller="UpdateDetails">
+<aura:attribute name="csvResult" type="object"></aura:attribute>
+    <aura:attribute name="accept" type="List" default="['.csv', '.xls']"/>
+    <aura:attribute name="multiple" type="Boolean" default="true"/>
+    <aura:attribute name="disabled" type="Boolean" default="false"/>
+<aura:attribute name="columns" type="List" default="[
+            {label: 'StudentId', fieldName: 'Stuedentid', type: 'text'},
+            {label: 'StuedentName', fieldName: 'Name', type: 'text',editable:'true'},
+            {label: 'StudentAddress', fieldName: 'address', type: 'text',editable:'true'}]"></aura:attribute>
+    
+    <aura:attribute name="spinner" type="boolean" default = "false"></aura:attribute>
+     
+    	
+    <div class="scroll" style="width:100%">
+        <aura:if isTrue="{! v.spinner }">
+            <lightning:spinner alternativeText="Loading"/>        
+            </aura:if> 
+         </div>
+<div style="padding-right:5%">
+            <!-- csv file  input -->
+    <lightning:input type="number" name="myNumber" label='{!$Label.c.English_Label}' value="54" /> 
+<lightning:input type="file" label="" name="Mapping" multiple="false" accept=".csv" onchange="{!c.readCSV}" />
+        
+    
+    </div> 
+    
+        <div style="height: 100px">
+        <lightning:datatable
+                aura:id="accountDataTable"
+                keyField="Id"
+                data="{!v.csvResult}"
+                columns="{!v.columns}"
+                hideCheckboxColumn="true"
+                onrowaction="{! c.handleRowAction }"
+                onsave ="{!c.onSave}"
+                resizeColumnDisabled="true"
+                />
+    </div>
+   
+</aura:component>

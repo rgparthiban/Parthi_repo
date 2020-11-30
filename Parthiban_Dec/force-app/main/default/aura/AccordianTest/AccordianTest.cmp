@@ -1,0 +1,201 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,lightning:actionOverride,force:lightningQuickAction,forceCommunity:availableForAllPageTypes"
+                controller="FormMap" access="global">
+    
+    
+    <!-- Description for events -->
+    
+         <!--Description for handler -->
+    <aura:handler name="init" value="{!this}" action="{!c.defaultServiceInit}"/>
+    
+    <!--Description for attributes -->
+    <aura:attribute name="conMap" type="Object"/>
+    <aura:attribute name="bigconMap" type="Object"/>
+    <aura:attribute name="bigconMapUpdate" type="Object"/>
+    <aura:attribute name="orgMap" type="Object"/>
+    <aura:attribute name="allServicesMap" type="Object"/>
+    <aura:attribute name="defFirstServiceOffer" type="Object" />
+    <aura:attribute name="keysMapForParentLevel" type="List"/>
+    <aura:attribute name="overrideData" type="List"/>
+    <aura:attribute name="attr" type="List"/> 
+    <aura:attribute name="forSubmit" type="Boolean"/>
+    <aura:attribute name="createNewVersion" type="Boolean"/>
+    <aura:attribute name="quantityChk" type="Boolean" />
+    <aura:attribute name="backAndForth" type="Boolean" default="true"/>
+    <aura:attribute name="recursiveCheck" type="Boolean" default="false"/>
+    <aura:attribute name="pkgKeyCheck" type="Boolean" default="false"/>
+    <aura:attribute name="doInitCheck" type="Boolean" default="false"/>
+    <aura:attribute name="Spinner" type="boolean" default="false"/>
+    <aura:attribute name="isSending" type="boolean" default="false"/>
+    <aura:attribute name="initCheck" type="boolean" default="false"/>
+    <aura:attribute name="prevselectedSVC" type="String"/>
+    <aura:attribute name="selTabId" type="string" />
+    <aura:attribute name="quoteRecId" type="String"/>
+    <aura:attribute name="listofservices" type="String"/>
+    <aura:attribute name="selectedService" type="String"/>
+    <aura:attribute name="bigmapLength" type="Integer"/>
+    <aura:attribute name="currentVersion" type="Decimal"/>
+     <aura:attribute name="priceSpinner" type="Boolean"/>
+    
+      <aura:attribute name="lastPkgKeyIndex" type="Integer"/>
+      <aura:attribute name="lastProdKeyIndex" type="Integer"/>
+    <aura:attribute name="orderType" type="String"/>
+    <aura:attribute name="payerEnable" type="Boolean" default="false"/>
+     <aura:attribute name="switchspinner" type="boolean" default="false"/>
+    
+    <aura:if isTrue="{!v.initCheck}">
+        
+        
+        <aura:if isTrue="{!v.switchspinner}">
+            <div class="slds-spinner_container"  >
+                <div class="slds-spinner--brand slds-spinner slds-spinner--large" role="alert">
+                    <span class="slds-assistive-text"></span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </aura:if>
+        
+        
+        <div class="slds-grid slds-wrap">
+            <div class="slds-size_1-of-12 ">
+                <div class="slds-col">
+                    <div class="slds-m-left_small">
+                        <div style="font-size:15px;font-weight:bold;width: 8rem; ">  </div>
+                        <ul role="tablist" aria-orientation="vertical" >
+                            <aura:iteration items="{!v.allServicesMap}" var="serviceobj" indexVar="key" >
+                                <br /> 
+                                 
+                                <aura:if isTrue="{!key == 0}">
+                                    <li id="{!serviceobj.key+'-a'}" title="{!serviceobj.key}" role="presentation"  value ="{!serviceobj.key}" aura:id="{!serviceobj.key}" style="width: 110px;  float: center" class="hcompStyleColor">
+                                        <a  title="{!serviceobj.key}" class="slds-vertical-tabs__link"
+                                           href="javascript:void(0)" onclick="{!c.showSearch}" 
+                                           aura:id="packages">
+                                            {!serviceobj.key}
+                                        </a>
+                                        
+                    
+                                    </li> 
+                                    <aura:set attribute="else">
+                                        <li id="{!serviceobj.key+'-a'}" title="{!serviceobj.key}" role="presentation"  value ="{!serviceobj.key}" aura:id="{!serviceobj.key}" style="width: 110px;  float: center" class="compStyle">
+                                            <a  title="{!serviceobj.key}" class="slds-vertical-tabs__link"
+                                               href="javascript:void(0)" onclick="{!c.showSearch}" 
+                                               aura:id="packages">
+                                                {!serviceobj.key}
+                                                
+                                            </a>
+                                        </li> 
+                                    </aura:set>
+                                    
+                                </aura:if> 
+                            </aura:iteration> 
+                        </ul> 
+                    </div>
+                </div> 
+            </div>
+            <div class="demo-only-spacing demo-only-padding">
+                
+                <div class="slds-p-right_medium">&nbsp;&nbsp;&nbsp;</div>
+                
+            </div>
+            
+            
+            <div class="slds-size_10-of-12">
+                <div class="slds-grid slds-grid_align-end">
+                    <div class="slds-col">
+                         <aura:if isTrue="{!v.orderType == 'createOrder'}"> 
+                             <div class="slds-grid slds-grid_align-end">
+                    				<div class="slds-col">
+                            <!-- <lightning:layout  horizontalAlign="end"> 
+                                <lightning:button label="save" onclick="{!c.saveOrder}" variant="brand"
+                                                  iconPosition='right' />
+                                 </lightning:layout> -->
+                                  
+                                 </div>
+                                   &nbsp;&nbsp;    
+                            <div class="slds-col">
+                             <lightning:layout  horizontalAlign="end"> 
+                                	<lightning:button label="Add Billing Account" onclick="{!c.nextToPayer}" variant="brand"
+                                                  iconPosition='right' />
+                                 </lightning:layout>
+                                 </div>
+                             </div>
+                              <aura:set attribute="else">
+                        <aura:if isTrue="{!not(empty(v.allServicesMap))}">
+                        <aura:if isTrue="{!v.forSubmit}">
+                            <lightning:layout  horizontalAlign="end"> 
+                                <!--<lightning:button label="Submit" onclick="{!c.submit}" variant="brand"
+                                                  iconPosition='right' />-->
+                                <lightning:button label="Save" onclick="{!c.submit}" variant="brand"
+                                                  iconPosition='right' />
+                            </lightning:layout>
+                        </aura:if>
+                        </aura:if>
+                           </aura:set>  
+                        </aura:if>    
+                    </div>
+                </div>
+                
+                <div class="slds-m-left_small">
+                    <lightning:accordion  >
+                        
+                        <aura:iteration items="{!v.conMap}" var="conObj" indexVar="key" >
+                            
+                            
+                            <c:AccordianRecursiveFirst con="{!conObj}" QLIMapOrg = "{!v.orgMap}"    
+                                                       attr="{!v.attr}" dataOverrideList="{!v.overrideData}" 
+                                                       quoteRecId="{!v.quoteRecId}" bigconMapUpdate="{!v.allServicesMap}" 
+                                                       selectedService = "{!v.selectedService}"
+                                                       currentVersion = "{!v.currentVersion}"
+                                                       bigmapLength = "{!v.bigmapLength}"
+                                                       bigmapIndex="{!key}"/>
+             
+                        </aura:iteration>
+                        
+                    </lightning:accordion>
+                    
+                </div>
+                &nbsp;
+                <div class="slds-grid slds-grid_align-end">
+                    <div class="slds-col">
+                        
+                         <aura:if isTrue="{!v.orderType == 'createOrder'}"> 
+                             <div class="slds-grid slds-grid_align-end">
+                    				<div class="slds-col">
+                            <!--<lightning:layout  horizontalAlign="end"> 
+                                <lightning:button label="save" onclick="{!c.saveOrder}" variant="brand"
+                                                  iconPosition='right' />
+                                 </lightning:layout>-->
+                                 </div>
+                                 &nbsp;&nbsp;    
+                                 <div class="slds-col">
+                             <lightning:layout  horizontalAlign="end"> 
+                                	<lightning:button label="Add Billing Account" onclick="{!c.nextToPayer}" variant="brand"
+                                                  iconPosition='right' />
+                                 </lightning:layout>
+                                 </div></div>
+                              <aura:set attribute="else">
+                        
+                        <aura:if isTrue="{!not(empty(v.allServicesMap))}">
+                        <aura:if isTrue="{!v.forSubmit}">
+                            <lightning:layout class="slds-m-right--small" horizontalAlign="end"> 
+                                
+                               <!-- <lightning:button label="{!$Label.c.SUBMIT}" onclick="{!c.submit}" variant="brand"
+                                                  iconPosition='right' />-->
+                                <lightning:button label="Save" onclick="{!c.submit}" variant="brand"
+                                                  iconPosition='right' />
+                            </lightning:layout> 
+                        </aura:if>
+                        </aura:if>
+                         </aura:set>
+                            </aura:if> 
+                    </div>
+                
+                
+                </div>
+            </div>
+        </div>
+       
+    </aura:if>
+  
+    
+</aura:component>

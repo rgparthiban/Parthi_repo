@@ -1,0 +1,997 @@
+<aura:component
+                implements="flexipage:availableForRecordHome,force:hasRecordId,lightning:actionOverride,force:lightningQuickAction,forceCommunity:availableForAllPageTypes"
+                controller="FormMap" access="global"  extensible="true">
+    
+    <!-- Description for events -->
+    
+    
+    
+    
+    
+    <!-- Description for handler-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <!--doInit-->
+    
+     <aura:attribute name="customSetDetails" type="Object" />
+    
+    <!-- Description for attribute-->
+    
+    <aura:attribute name="NegativeDiscountsAllowed" type="String" />
+    <aura:attribute name="con" type="Object" />
+    <aura:attribute name="QLIMap" type="Object[]" />
+    <aura:attribute name="bigconMapUpdate" type="Object[]" />
+    <aura:attribute name="itemsforChk" type="List" />
+    <aura:attribute name="parentKeys" type="List" />
+    <aura:attribute name="attr" type="List" />
+    <aura:attribute name="overridenOfferList" type="List" />
+    <aura:attribute name="overrideList" type="List" />
+    <aura:attribute name="element" type="String" />
+    <aura:attribute name="forPkgKey" type="Boolean" default="false" />
+    <aura:attribute name="backAndFwd" type="Boolean" default="true" />
+    <aura:attribute name="firstLevlPackageKey" type="String" />
+    <aura:attribute name="isOpen" type="boolean" default="false" />
+    <aura:attribute name="initCheck" type="boolean" default="false" />
+    <aura:attribute name="classCheck" type="String" />
+    <aura:attribute name="selectedService" type="String" />
+    <aura:attribute name="currentselectedService" type="String" />
+    <aura:attribute name="forSubmit" type="boolean" />
+    <aura:attribute name="priceSpinner" type="boolean" default="false" />
+    <aura:attribute name="quoteRecId" type="String" />
+    <aura:attribute name="recursiveCheck" type="Boolean" default="false" />
+    <aura:attribute name="packageKeyofFirstLevel" type="String" />
+    <aura:attribute name="breakflag" type="boolean" default="false" />
+    <aura:attribute name="childBundleBreakFlag" type="boolean"
+                    default="false" />
+    <aura:attribute name="decimalFlag" type="boolean" default="true" />
+    <aura:attribute name="currentVersion" type="Decimal" />
+    <aura:attribute name="bigmapLength" type="Integer" />
+    <aura:attribute name="bigmapIndex" type="Integer" />
+    <aura:attribute name="bigmapSpinner" type="boolean" default="false" />
+    <aura:attribute name="deletespinner" type="boolean" default="false" />
+    
+    
+    <aura:if isTrue="{!v.initCheck}">
+        <!--Spinner Start For PriceOverriding -->
+        <aura:if isTrue="{!v.bigmapSpinner}">
+            <div class="slds-spinner_container">
+                <div class="slds-spinner--brand slds-spinner slds-spinner--large"
+                     role="alert">
+                    <span class="slds-assistive-text"></span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </aura:if>
+        
+        
+        <aura:if isTrue="{!v.deletespinner}">
+            <div class="slds-spinner_container">
+                <div class="slds-spinner--brand slds-spinner slds-spinner--large"
+                     role="alert">
+                    <span class="slds-assistive-text"></span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </aura:if>
+        
+        <!--Spinner End-->
+        <div >
+            <table width="100%"
+                   style="background-color: #F7F6F6; border: 3px solid #FFFFFF; height: 41px ;padding: 2px;">
+                <tr width="100%">
+                    <td width="1%" align="left"><aura:if isTrue="{!v.backAndFwd}">
+                        <div class="slds-float--left " aura:id="{!v.con.key}"
+                             onclick="{!c.sectionOne}" style="cursor: pointer ">
+                            <lightning:icon class="slds-show" aura:id="articleOne"
+                                            iconName="utility:chevronright" size="xx-small"
+                                            alternativeText="Indicates add" />
+                            <lightning:icon class="slds-hide" aura:id="articleOne"
+                                            iconName="utility:chevrondown" size="xx-small"
+                                            alternativeText="Indicates dash" />
+                            
+                        </div>
+                        <aura:set attribute="else">
+                            
+                            <div class="slds-float--left " aura:id="{!v.con.key}"
+                                 onclick="{!c.sectionOne}" style="cursor: pointer;">
+                                <lightning:icon class="slds-show" aura:id="articleOne"
+                                                iconName="utility:chevrondown" size="xx-small"
+                                                alternativeText="Indicates add" />
+                                <lightning:icon class="slds-hide" aura:id="articleOne"
+                                                iconName="utility:chevronright" size="xx-small"
+                                                alternativeText="Indicates dash" />
+                            </div>
+                        </aura:set>
+                        
+                        </aura:if></td>
+               
+                    <aura:if isTrue="{!v.recursiveCheck}">
+                        <td width="1%"><aura:iteration items="{!v.con.value}"
+                                                       var="item" indexVar="index">
+                            <aura:if isTrue="{!and(index == 0,item.mandatory == 'OptOut')}">
+                                <!--text="{!v.con.key+'#'+item.name}" -->
+                                <ui:inputCheckbox aura:id="checkbox" label=""
+                                                  click="{!c.checkBoxChange}" text="{!v.con.key+'#'+item.name+'#'+v.packageKeyofFirstLevel}"
+                                                  value="true" />
+                                <!--<ui:inputCheckbox aura:id="checkbox" label="" click="{!c.checkBoxChange}" text="{!v.con.key+'#'+item.name+','+v.packageKeyofFirstLevel}" value="true"/>-->
+                                
+                                <lightning:input aura:id="checkboxoptInOrOutHidden" name="name"
+                                                 value="{!v.con.key}" required="true" class="slds-hidden" />
+                                
+                            </aura:if>
+                            <aura:if isTrue="{!and(index == 0,item.mandatory == 'OptIn')}">
+                                
+                                <ui:inputCheckbox aura:id="checkbox" label=""
+                                                  click="{!c.checkBoxChange}" text="{!v.con.key+'#'+item.name+'#'+v.packageKeyofFirstLevel}"
+                                                  value="false" />
+                                <!--<ui:inputCheckbox aura:id="checkbox" label="" click="{!c.checkBoxChange}" text="{!v.con.key+'#'+item.name+','+v.packageKeyofFirstLevel}"  value="false"/>-->
+                                
+                                <lightning:input aura:id="checkboxoptInOrOutHidden" name="name"
+                                                 value="{!v.con.key}" required="true" class="slds-hidden" />
+                            </aura:if>
+                            </aura:iteration></td>
+                    </aura:if>
+                    
+                    <td>
+                        <!-- onclick="{!c.sectionOne}"-->
+                        <div > 
+                            <div onclick="{!c.sectionOne}" style="cursor: pointer;width:200px;max-width:240px;white-space:nowrap;">
+                            {!v.con.key}
+                            </div>
+                        </div>
+                    </td>
+                    <td style="width:650px;max-width:650px" >
+                    <div>
+                   
+                         
+                            <aura:iteration items="{!v.con.value}" var="item"
+                                            indexVar="index">
+                                
+                                <aura:if isTrue="{!item.name == v.con.key }">
+                                   
+                                    <aura:if isTrue="{!and(item.price !=null,item.price !=0)  }">
+                                        <!-- jagriti added for space -->
+                                        <div class="demo-only-spacing demo-only-padding">
+                                            <div class="slds-p-top_x-small"></div>
+                                            
+                                        </div>
+                                        <!-- jagriti added for space -->
+                                        <div
+                                             class="slds-box slds-box_xx-small colorCSS slds-m-bottom_xx-small">
+                                            <table  >
+                                                <!--<td  width="20%" align="center" >OneTimeCharge </td>-->
+                                                
+                                                <td width="15%" align="center">
+                                                    <div class="slds-col" onmouseover="{!c.display}"
+                                                         onmouseout="{!c.displayOut}" title="Price type">
+                                                       <span
+                                                                                                  class="slds-assistive-text"> Price type</span>
+                                                    </div>
+                                                </td>
+                                                
+                                                
+                                                <td width="20%" align="center">
+                                                    <div class="slds-col" onmouseover="{!c.display}"
+                                                         onmouseout="{!c.displayOut}" title="Currency">
+                                                        {!item.currencyObj} <span class="slds-assistive-text">
+                                                        Currency</span>
+                                                    </div>
+                                                </td>
+                                                
+                                                <td width="20%" align="center">
+                                                    <div class="slds-col" onmouseover="{!c.display}"
+                                                         onmouseout="{!c.displayOut}" title="List Price">
+                                                        
+                                                        {!item.price} <span class="slds-assistive-text">
+                                                        List Price</span>
+                                                    </div>
+                                                    
+                                                </td>
+                                                <td width="10%" align="center">
+                                                    <div class="slds-col" onmouseover="{!c.display}"
+                                                         onmouseout="{!c.displayOut}" title="Discount" style="width: 110px;">
+                                                        <!--previous decimal value is two decimals-->
+                                                        <ui:inputText aura:id="priceOverrideNRC"
+                                                                      placeholder=""
+                                                                      value="{!item.nrcdiscountedValue}" class="input"
+                                                                      maxlength="5" size="10" change="{!c.priceOverrideNRC}">
+                                                        </ui:inputText>
+                                                        <!-- changed decimal value from two decimals to four decimals-->
+                                                        <!--<ui:inputText aura:id="priceOverrideNRC"
+                                                                      placeholder="{!$Label.c.Accordian_Recursive_NRCMsg}"
+                                                                      value="{!item.nrcdiscountedValue}" class="input"
+                                                                      maxlength="7" size="12" change="{!c.priceOverrideNRC}">
+                                                        </ui:inputText>-->
+                                                        <span class="slds-assistive-text">Discount</span>
+                                                    </div>
+                                                </td>
+                                                <td width="15%" align="center">
+                                                    <div class="slds-col" style="margin-top: -19px;padding-left: 5px;"
+                                                         onmouseover="{!c.display}" onmouseout="{!c.displayOut}"
+                                                         title="Discount Type">
+                                                        <lightning:select aura:id="priceOverrideNRCDiscType"
+                                                                          variant="label-hidden" value="{!item.nrcdiscountType}"
+                                                                          onchange="{!c.priceOverrideNRC}">
+                                                            <option text="Select" value="" />
+                                                            <option text="Absolute" value="Absolute" />
+                                                            <option text="%" value="%" />
+                                                            <option text="Override" value="Override" />
+                                                        </lightning:select>
+                                                        <span class="slds-assistive-text">Discount Type</span>
+                                                    </div>
+                                                </td>
+                                                <td width="5%" align="center"><lightning:input
+                                                                                                aura:id="hiddenForPriceNRC"
+                                                                                                name="{!v.con.key+'#'+item.name}"
+                                                                                                value="{!item.price+'#'+item.nrcvariableprice}"
+                                                                                                required="true" class="slds-hidden" /></td>
+                                                
+                                                <td width="15%" align="center">
+                                                    <div class="slds-col" onmouseover="{!c.display}" 
+                                                         onmouseout="{!c.displayOut}" title="Net Price">
+                                                        
+                                                        {!item.nrcnetprice } <span class="slds-assistive-text">Net
+                                                        Price</span>
+                                                    </div>
+                                                    
+                                                </td>
+                                                
+                                            </table>
+                                        </div>
+                                    </aura:if>
+                                    
+                                    <aura:if
+                                             isTrue="{!and(item.recurringCharge !=null,item.recurringCharge !=0)  }">
+                                        <!-- jagriti added for spacing -->
+                                        <div class="demo-only-spacing demo-only-padding">
+                                            <div class="slds-p-top_x-small"></div>
+                                            
+                                        </div>
+                                        <!--  jagriti added for spacing -->
+                                        
+                                        
+                                        <div
+                                             class="slds-box slds-box_xx-small colorCSS slds-m-bottom_xx-small">
+                                            <table>
+                                                <td width="15%" align="center">
+                                                    <div class="slds-col" onmouseover="{!c.display}"
+                                                         onmouseout="{!c.displayOut}" title="Price type">
+                                                        
+                                                         <span
+                                                                                                 class="slds-assistive-text"> Price type</span>
+                                                    </div>
+                                                </td>
+                                                <td width="20%" align="center">
+                                                    <div class="slds-col" onmouseover="{!c.display}"
+                                                         onmouseout="{!c.displayOut}" title="Currency">
+                                                        
+                                                        {!item.currencyObj} <span class="slds-assistive-text">Currency</span>
+                                                    </div>
+                                                </td>
+                                                <td width="20%" align="center">
+                                                    <div class="slds-col" onmouseover="{!c.display}"
+                                                         onmouseout="{!c.displayOut}" title="List Price">
+                                                        
+                                                        {!item.recurringCharge } <span class="slds-assistive-text">List
+                                                        Price</span>
+                                                    </div>
+                                                    
+                                                </td>
+                                                <td width="10%" align="center">
+                                                    <div class="slds-col" onmouseover="{!c.display}"
+                                                         onmouseout="{!c.displayOut}" title="Discount" style="width: 110px;">
+                                                        <!--previous decimal value is two decimals-->
+                                                        <ui:inputText aura:id="priceOverrideRC"
+                                                                      placeholder=""
+                                                                      value="{!item.rcdiscountedValue}" class="input"
+                                                                      maxlength="5" size="10" change="{!c.priceOverrideRC}">
+                                                            
+                                                        </ui:inputText>
+                                                        <!-- changed decimal value from two decimals to four decimals-->
+                                                      
+                                                        <span class="slds-assistive-text">Discount</span>
+                                                    </div>
+                                                    
+                                                </td>
+                                                <td width="15%" align="center">
+                                                    <div class="slds-col" style="margin-top: -19px;padding-left: 5px;"
+                                                         onmouseover="{!c.display}" onmouseout="{!c.displayOut}"
+                                                         title="Discount Type" >
+                                                        <lightning:select aura:id="priceOverrideRCDiscType"
+                                                                          variant="label-hidden" value="{!item.rcdiscountType}"
+                                                                          onchange="{!c.priceOverrideRC}">
+                                                            <option text="Select" value="" />
+                                                            <option text="Absolute" value="Absolute" />
+                                                            <option text="%" value="%" />
+                                                             <option text="Override" value="Override" />
+                                                        </lightning:select>
+                                                        <span class="slds-assistive-text">Discount Type</span>
+                                                    </div>
+                                                </td>
+                                                <td width="5%" align="center"><lightning:input
+                                                                                                aura:id="hiddenForPriceRC"
+                                                                                                name="{!v.con.key+'#'+item.name}"
+                                                                                                value="{!item.recurringCharge+'#'+item.rcvariableprice}"
+                                                                                                required="true" class="slds-hidden" /></td>
+                                                <td width="15%" align="center">
+                                                    
+                                                    <div class="slds-col" onmouseover="{!c.display}"
+                                                         onmouseout="{!c.displayOut}" title="Net Price">
+                                                        {!item.rcnetprice} <span class="slds-assistive-text">Net
+                                                        Price</span>
+                                                    </div>
+                                                    
+                                                </td>
+                                                
+                                            </table>
+                                        </div>
+                                    </aura:if>
+                                    
+                                </aura:if>
+                                
+                            </aura:iteration>
+                            
+                            
+                        </div>
+                        <div class="slds-hide" aura:id="articleOne"
+                             ></div>
+                    </td>
+                    <td>
+                    <aura:if isTrue="{!v.recursiveCheck}">                   
+                        &nbsp;
+                        <aura:set attribute="else">
+                            <td><lightning:input aura:id="quantityHidden" name="name"
+                                                 value="{!v.con.key}" required="true" class="slds-hidden" /></td>
+                            <div class="slds-grid slds-grid_align-end">
+                                
+                              &nbsp;&nbsp;&nbsp;&nbsp;  
+                                 <div class="slds-col" style="height: 2px; padding: 1px" title="Quantity">
+                                    <ui:inputText aura:id="quantity" placeholder="1" 
+                                                  change="{!c.quantityValidation}" value="{!v.con.quantity}"
+                                                  size="5"></ui:inputText>
+                                </div>&nbsp;&nbsp;&nbsp;&nbsp; 
+                                <div class="slds-col"> <aura:iteration items="{!v.con.value}" var="item"
+                                            indexVar="index">
+                                                             <aura:if isTrue="{!item.name == v.con.key }">  
+                                                            <lightning:buttonIcon variant="brand" size="medium"
+                                                                                  class="btnicon" iconName="utility:relate"
+                                                                                  title="Attributes" value="{!item.productOfferingId}" name="{!v.con.key}" onclick="{!c.loadAttribute}"
+                                                                                  /></aura:if>
+                                    </aura:iteration>
+                                                        </div>&nbsp;&nbsp;
+                                <div class="slds-col"> <aura:iteration items="{!v.con.value}" var="item"
+                                                                       indexVar="index">                                
+                                    <aura:if isTrue="{!item.name == v.con.key }">    
+                                        <aura:if isTrue="{!and(item.recurringCharge != null,item.packagedPriced == true)}">
+                                        </aura:if>
+                                        &nbsp;</aura:if></aura:iteration> </div>                               
+                                &nbsp;
+                                <div class="slds-col" onmouseover="{!c.display}"
+                                     onmouseout="{!c.displayOut}" title="Delete"
+                                     style="padding: 1px">
+                                    <lightning:buttonicon size="medium" class="btnicon"
+                                                          variant="brand" iconName="utility:delete" name="{!v.con.key}"
+                                                          value="{!v.con.key}"
+                                                          onclick="{!c.onDeleteForMultipleServices}" />
+                                    <span class="slds-assistive-text"> Delete</span>
+                                </div>                                
+                                &nbsp;&nbsp;                               
+                                 
+                            </div>
+                            
+                        </aura:set>
+                    </aura:if>
+                        </td>
+                </tr>
+            </table>
+            
+        </div>
+        <div class="{!v.classCheck}" aura:id="articleOne">
+            <aura:iteration items="{!v.con.value}" var="item" indexVar="index">
+                
+                <aura:if isTrue="{!index == 0 }">
+                    <lightning:card title="{!item.name}" iconName="standard:product"
+                                    class="slds-hide">
+                        <aura:set attribute="actions">
+                            <div class="slds-grid slds-grid_align-end">
+                                <div class="slds-col">
+                                    <div class="uiInput uiInputTextuiInput--default uiInput--input">
+                                    </div>
+                                </div>
+                                &nbsp; &nbsp; &nbsp;
+                                <div class="slds-col" onmouseover="{!c.display}"
+                                     onmouseout="{!c.displayOut}" title="Delete">
+                                    <span> <lightning:buttonicon size="medium"
+                                                                 class="btnicon" variant="brand" iconName="utility:delete"
+                                                                 type="submit" name="{!v.con.key}" value="{!v.con.key}"
+                                                                 onclick="{!c.onDelete}" />
+                                    </span> <span class="slds-assistive-text"> Delete</span>
+                                    
+                                </div>
+                                &nbsp; &nbsp; &nbsp;
+                                 <!-- <div class="slds-col">
+                                &nbsp; &nbsp; &nbsp;
+                                <aura:if isTrue="{!and(item.recurringCharge != null,item.packagedPriced == true)}">
+                                <c:PricingComponent priceCurrency="{!item.currencyObj}" readOnly="false" quoteId="{!v.quoteRecId}" packageId="{!v.packageKeyofFirstLevel}" productId="{!item.productOfferingId}" serviceType="{!v.selectedService}" rc="{!item.recurringCharge}"/></aura:if>
+                                 &nbsp;
+                                 </div>-->
+                            </div>
+                        </aura:set>
+                        
+                        <aura:if isTrue="{!and(item.price !=null,item.price !=0)  }">
+                            <!-- jagriti added for spacing -->
+                            <div class="demo-only-spacing demo-only-padding">
+                                <div class="slds-p-top_x-small"></div>
+                                
+                            </div>
+                            <!-- jagriti added for spacing -->
+                            
+                            
+                            <div
+                                 class="slds-box slds-box_xx-small colorCSS slds-m-bottom_xx-small">
+                                <table horizontal="sapce" >
+                                    <td width="20%" align="center">
+                                        <div class="slds-col" onmouseover="{!c.display}"
+                                             onmouseout="{!c.displayOut}" title="Price Type">
+                                            <span
+                                                                                      class="slds-assistive-text"> Price Type</span>
+                                        </div>
+                                    </td>
+                                    
+                                    
+                                    <td width="20%" align="center">
+                                        <div class="slds-col" onmouseover="{!c.display}"
+                                             onmouseout="{!c.displayOut}" title="Currency">
+                                            
+                                            {!item.currencyObj} <span class="slds-assistive-text">Currency</span>
+                                        </div>
+                                    </td>
+                                    
+                                    <td width="20%" align="center">
+                                        <div class="slds-col" onmouseover="{!c.display}"
+                                             onmouseout="{!c.displayOut}" title="List Price">
+                                            {!item.price } <span class="slds-assistive-text">List
+                                            Price</span>
+                                        </div>
+                                        
+                                    </td>
+                                    <!--{!$Label.c.value_is} {!item.price}-->
+                                    <td width="10%" align="center">
+                                        
+                                        <ui:inputText
+                                                                                 aura:id="priceOverrideNRC"
+                                                                                 placeholder="" value=""
+                                                                                 class="input" maxlength="5" size="10" change="">
+                                        </ui:inputText> <lightning:select aura:id="priceOverrideNRCDiscType"
+                                                                          variant="label-hidden" value="{!item.nrcdiscountType}">
+                                        <option text="Select" value="" />
+                                        <option text="Absolute" value="Absolute" />
+                                        <option text="%" value="%" />
+                                         <option text="Override" value="Override" />
+                                             </lightning:select>
+                                        </td>
+                                    <td width="10%" align="center"><lightning:input
+                                                                                    aura:id="hiddenForPriceNRC" name="}" value="" required="true"
+                                                                                    class="slds-hidden" /></td>
+                                    
+                                    <td width="10%" align="center">
+                                        <div class="slds-col" onmouseover="{!c.display}"
+                                             onmouseout="{!c.displayOut}" title="Net Price">
+                                            
+                                            {!item.nrcnetprice } <span class="slds-assistive-text">Net
+                                            Price</span>
+                                        </div>
+                                    </td>
+                                    
+                                </table>
+                            </div>
+                        </aura:if>
+                        <aura:if
+                                 isTrue="{!and(item.recurringCharge !=null,item.recurringCharge !=0)  }">
+                            <!-- jagriti added for spacing 
+                            <div class="demo-only-spacing demo-only-padding">
+                                <div class="slds-p-top_x-small"></div>
+                                
+                            </div>
+                          jagriti added for spacing -->
+                            
+                            
+                            <div
+                                 class="slds-box slds-box_xx-small colorCSS slds-m-bottom_xx-small">
+                                <table>
+                                    <td width="20%" align="center">
+                                        <div class="slds-col" onmouseover="{!c.display}"
+                                             onmouseout="{!c.displayOut}" title="Price Type">
+                                            
+                                            <span
+                                                                                     class="slds-assistive-text"> Price Type</span>
+                                        </div>
+                                    </td>
+                                    
+                                    
+                                    <td width="20%" align="center">
+                                        <div class="slds-col" onmouseover="{!c.display}"
+                                             onmouseout="{!c.displayOut}" title="Currency1">
+                                            
+                                            {!item.currencyObj} <span class="slds-assistive-text">Currency</span>
+                                        </div>
+                                    </td>
+                                    
+                                    <td width="20%" align="center">
+                                        
+                                        <div class="slds-col" onmouseover="{!c.display}"
+                                             onmouseout="{!c.displayOut}" title="List Price">
+                                            
+                                            {!item.recurringCharge } <span class="slds-assistive-text">List
+                                            Price</span>
+                                        </div>
+                                    </td>
+                                    <td width="10%" align="center"><ui:inputText
+                                                                                 aura:id="priceOverrideRC"
+                                                                                 placeholder="" value=""
+                                                                                 class="input" maxlength="5" size="10" change="">
+                                        </ui:inputText> <lightning:select aura:id="priceOverrideRCDiscType"
+                                                                          variant="label-hidden" value="{!item.rcdiscountType}">
+                                        <option text="Select" value="" />
+                                        <option text="Absolute" value="Absolute" />
+                                        <option text="%" value="%" />
+                                         <option text="Override" value="Override" />
+                                        </lightning:select></td>
+                                    
+                                    <td width="10%" align="center"><lightning:input
+                                                                                    aura:id="hiddenForPriceRC" name="" value="" required="true"
+                                                                                    class="slds-hidden" /></td>
+                                    
+                                    <div>
+                                        <td width="10%" align="center">
+                                            <div class="slds-col" onmouseover="{!c.display}"
+                                                 onmouseout="{!c.displayOut}" title="Net Price">
+                                                
+                                                {!item.rcnetprice } <span class="slds-assistive-text">Net
+                                                Price</span>
+                                            </div>
+                                        </td>
+                                    </div>
+                                </table>
+                            </div>
+                        </aura:if>
+                    </lightning:card>
+                    <aura:set attribute="else">
+                        <!-- **** child products/Bundles ****-->
+                        <aura:if isTrue="{!item.name !=undefined }">
+                            <!-- normal product so display here-->
+                            <!--when child is child then it is quoteline,so it should have name -->
+                            <div class="demo-only-spacing demo-only-padding">
+                                <div class="slds-p-left_x-large">
+                                    <div class="demo-only-spacing demo-only-padding">
+                                        <div class="slds-p-top_xxx-small"></div>
+                                        
+                                    </div>
+                                    
+                                    <div class="slds-box slds-box_xx-small slds-m-bottom_x-small">
+                                        
+                                        <div class="demo-only-spacing demo-only-padding">
+                                            <div class="slds-p-bottom_xx-small"></div>
+                                            
+                                        </div>
+                                        
+                                        <table horizontal="sapce">
+                                            <tr width="100%">
+                                                <aura:if isTrue="{!item.mandatory != 'Mandatory'}">
+                                                    <aura:if
+                                                             isTrue="{!item.isAddon == undefined || item.isAddon ==false }">
+                                                        <td width="1%" align="left"><aura:if
+                                                                                             isTrue="{!item.mandatory == 'OptOut'}">
+                                                            <ui:inputCheckbox aura:id="checkbox" label=""
+                                                                              click="{!c.checkBoxChange}"
+                                                                              text="{!v.con.key+'#'+item.name+'#'+v.packageKeyofFirstLevel}" value="true" />
+                                                            <lightning:input aura:id="checkboxoptInOrOutHidden"
+                                                                             name="name" value="{!v.con.key}" required="true"
+                                                                             class="slds-hidden" />
+                                                            </aura:if> <aura:if isTrue="{!item.mandatory == 'OptIn'}">
+                                                            <ui:inputCheckbox aura:id="checkbox" label=""
+                                                                              click="{!c.checkBoxChange}"
+                                                                              text="{!v.con.key+'#'+item.name+'#'+v.packageKeyofFirstLevel}" value="false" />
+                                                            <lightning:input aura:id="checkboxoptInOrOutHidden"
+                                                                             name="name" value="{!v.con.key}" required="true"
+                                                                             class="slds-hidden" />
+                                                            
+                                                            </aura:if></td> &nbsp; 
+                                                    </aura:if>
+                                                </aura:if>
+                                                <td width="29%" align="left">{!item.name}</td>
+                                                <td width="100%" align="left">
+                                                    
+                                                    <div class="slds-grid slds-grid_align-end">
+                                                        <aura:if isTrue="{!item.isAddon}">
+                                                            <div class="slds-col">
+                                                                <div
+                                                                     class="uiInput uiInputTextuiInput--default uiInput--input">
+                                                                    <!--<span>Quantity</span>-->
+                                                                    <ui:inputText aura:id="quantityInner" placeholder="1"
+                                                                                  change="{!c.quantityValidationInner}"
+                                                                                  value="{!item.quantity}" class="input" size="5"></ui:inputText>
+                                                                    <div>
+                                                                        <lightning:input aura:id="quantityInnerHidden"
+                                                                                         name="{!v.con.key}" value="{!item.productOfferingId}"
+                                                                                         required="true" class="slds-hidden" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            </aura:if>
+                                                         <div class="slds-col">
+                                                            &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;
+                                                            <lightning:buttonIcon variant="brand" size="medium"
+                                                                                  class="btnicon" iconName="utility:relate"
+                                                                                  title="Attributes" value="{!item.productOfferingId}"
+                                                                                  name="{!v.con.key}" onclick="{!c.loadAttribute}" />
+                                                            &nbsp; &nbsp; 
+                                                        </div>
+                                                          <aura:if isTrue="{!and(item.recurringCharge != null,item.packagedPriced == false)}">
+                                                                  <div class="slds-col">
+                                                           
+                                                                 
+                                                                &nbsp; &nbsp; &nbsp;
+                                                        		</div>
+                                                               </aura:if>
+                                                        
+                                                            <aura:if isTrue="{!item.isAddon}">
+                                                            <div class="slds-col" onmouseover="{!c.display}"
+                                                                 onmouseout="{!c.displayOut}" title="Delete">&nbsp; &nbsp; &nbsp;
+                                                                <span> &nbsp;&nbsp; &nbsp; <lightning:buttonicon
+                                                                                                                 size="medium" class="btnicon" variant="brand"
+                                                                                                                 iconName="utility:delete" name="{!v.con.key}"
+                                                                                                                 value="{!item.productOfferingId}"
+                                                                                                                 onclick="{!c.onDeleteInner}" />
+                                                                </span> <span class="slds-assistive-text"> Delete</span>
+                                                                
+                                                                
+                                                            </div> 
+                                                        </aura:if>
+                                                           
+                                                            
+                                                           
+                                                       
+                                                        
+                                                      
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <aura:if isTrue="{!and(item.price !=null,item.price !=0)  }">
+                                            <!-- jagriti added for space -->
+                                            <div class="demo-only-spacing demo-only-padding">
+                                                <div class="slds-p-top_x-small"></div>
+                                                
+                                            </div>
+                                            <!-- jagriti added for space -->
+                                            <div
+                                                 class="slds-box slds-box_xx-small colorCSS slds-m-bottom_xx-small">
+                                                <table horizontal="sapce" style="width:650px;max-width:650px" >
+                                                    <!--<td  width="20%" align="center" >OneTimeCharge </td>-->
+                                                    
+                                                    <td width="15%" align="center">
+                                                        <div class="slds-col" onmouseover="{!c.display}"
+                                                             onmouseout="{!c.displayOut}" title="Price type">
+                                                             <span
+                                                                                                      class="slds-assistive-text"> Price type</span>
+                                                        </div>
+                                                    </td>
+                                                    <td width="20%" align="center"><div class="slds-col"
+                                                                                        onmouseover="{!c.display}" onmouseout="{!c.displayOut}"
+                                                                                        title="Currency">
+                                                        
+                                                        {!item.currencyObj} <span class="slds-assistive-text">
+                                                        Currency</span>
+                                                        </div></td>
+                                                    
+                                                    <td width="20%" align="center">
+                                                        <div class="slds-col" onmouseover="{!c.display}"
+                                                             onmouseout="{!c.displayOut}" title="List Price">
+                                                            
+                                                            {!item.price} <span class="slds-assistive-text">
+                                                            List Price</span>
+                                                        </div>
+                                                        
+                                                    </td>
+                                                 
+                                                    <aura:if isTrue="{!item.packagedPriced == false}">
+                                                        <td width="10%" align="center">
+                                                            <div class="slds-col" onmouseover="{!c.display}"
+                                                                 onmouseout="{!c.displayOut}" title="Discount" style="width: 110px;">
+                                                                <!--previous decimal value is two decimals-->
+                                                               <ui:inputText aura:id="priceOverrideNRC"
+                                                                              placeholder=""
+                                                                              value="{!item.nrcdiscountedValue}" class="input"
+                                                                              maxlength="5" size="10" change="{!c.priceOverrideNRC}" >
+                                                                </ui:inputText>
+                                                                <!-- changed decimal value from two decimals to four decimals-->
+                                                               <!--<ui:inputText aura:id="priceOverrideNRC"
+                                                                              placeholder="{!$Label.c.Accordian_Recursive_NRCMsg}"
+                                                                              value="{!item.nrcdiscountedValue}" class="input"
+                                                                              maxlength="7" size="12" change="{!c.priceOverrideNRC}" >
+                                                                </ui:inputText>-->
+                                                               
+
+                                                                <span class="slds-assistive-text">Discount</span>
+                                                            </div>
+                                                        </td>
+                                                        <td width="15%" align="center">
+                                                            <div class="slds-col" style="margin-top: -19px;padding-left: 5px;"
+                                                                 onmouseover="{!c.display}" onmouseout="{!c.displayOut}"
+                                                                 title="Discount Type">
+                                                                <lightning:select aura:id="priceOverrideNRCDiscType"
+                                                                                  variant="label-hidden" value="{!item.nrcdiscountType}"
+                                                                                  onchange="{!c.priceOverrideNRC}">
+                                                                    <option text="Select" value="" />
+                                                                    <option text="Absolute" value="Absolute" />
+                                                                    <option text="%" value="%" />
+                                                                     <option text="Override" value="Override" />
+                                                                    
+                                                                </lightning:select>
+                                                                <span class="slds-assistive-text">Discount Type</span>
+                                                            </div>
+                                                        </td>
+                                                        <td width="5%" align="center"><lightning:input
+                                                                                                        aura:id="hiddenForPriceNRC"
+                                                                                                        name="{!v.con.key+'#'+item.name}"
+                                                                                                        value="{!item.price+'#'+item.nrcvariableprice}"
+                                                                                                        required="true" class="slds-hidden" /></td>
+                                                        
+                                                        <td width="15%" align="center">
+                                                            <div class="slds-col" onmouseover="{!c.display}"
+                                                                 onmouseout="{!c.displayOut}" title="Net Price">
+                                                                
+                                                                {!item.nrcnetprice } <span class="slds-assistive-text">Net
+                                                                Price</span>
+                                                            </div>
+                                                            
+                                                        </td>
+                                                    </aura:if>
+                                                    
+                                                    <!--ADDON price override implementation -->
+                                                     <aura:if isTrue="{!item.isAddon == true}">
+                                                        <td width="10%" align="left">
+                                                           
+                                                                  <div class="slds-col" onmouseover="{!c.display}" style="width: 110px;"
+                                                             onmouseout="{!c.displayOut}" title="Discount">
+                                                               <ui:inputText aura:id="priceOverrideNRC"
+                                                                              placeholder=""
+                                                                              value="{!item.nrcdiscountedValue}" class="input"
+                                                                              maxlength="5" size="10" change="{!c.priceOverrideNRC}" >
+                                                                </ui:inputText>
+                                                              <!-- <ui:inputText aura:id="priceOverrideNRC"
+                                                                              placeholder="{!$Label.c.Accordian_Recursive_NRCMsg}"
+                                                                              value="{!item.nrcdiscountedValue}" class="input"
+                                                                              maxlength="7" size="12" change="{!c.priceOverrideNRC}" >
+                                                                </ui:inputText>-->
+                                                            
+
+                                                                <span class="slds-assistive-text">Discount</span>
+                                                          </div>
+                                                        </td>
+                                                        <td width="15%" align="left">
+                                                             <div class="slds-col" style="margin-top: -19px;padding-left: 5px;"
+                                                             onmouseover="{!c.display}" onmouseout="{!c.displayOut}"
+                                                             title="Discount Type" >
+                                                                <lightning:select aura:id="priceOverrideNRCDiscType"
+                                                                                  variant="label-hidden" value="{!item.nrcdiscountType}"
+                                                                                  onchange="{!c.priceOverrideNRC}">
+                                                                    <option text="Select" value="" />
+                                                                    <option text="Absolute" value="Absolute" />
+                                                                    <option text="%" value="%" />
+                                                                     <option text="Override" value="Override" />
+                                                                    
+                                                                </lightning:select>
+                                                                <span class="slds-assistive-text">Discount Type</span>
+                                                            </div>
+                                                        </td>
+                                                        <td width="5%" align="left"><lightning:input
+                                                                                                        aura:id="hiddenForPriceNRC"
+                                                                                                        name="{!v.con.key+'#'+item.name}"
+                                                                                                        value="{!item.price+'#'+item.nrcvariableprice}"
+                                                                                                        required="true" class="slds-hidden" /></td>
+                                                        
+                                                        <td width="15%" align="center">
+                                                             <div class="slds-col" onmouseover="{!c.display}"
+                                                             onmouseout="{!c.displayOut}" title="Net Price">
+                                                                
+                                                                {!item.nrcnetprice } <span class="slds-assistive-text">Net
+                                                                Price</span>
+                                                            
+                                                            </div>
+                                                        </td>
+                                                    </aura:if>
+                                                    <!--end of price override for ADDON -->
+                                                </table>
+                                            </div>
+                                        </aura:if>
+                                        
+                                        <aura:if
+                                                 isTrue="{!and(item.recurringCharge !=null,item.recurringCharge !=0)  }">
+                                            <!-- jagriti added for spacing -->
+                                            <div class="demo-only-spacing demo-only-padding">
+                                                <div class="slds-p-top_x-small"></div>
+                                                
+                                            </div>
+                                            <!--  jagriti added for spacing -->
+                                            
+                                            
+                                            <div
+                                                 class="slds-box slds-box_xx-small colorCSS slds-m-bottom_xx-small">
+                                                <table style="width:650px;max-width:650px">
+                                                    <td width="15%" align="center">
+                                                        <div class="slds-col" onmouseover="{!c.display}"
+                                                             onmouseout="{!c.displayOut}" title="Price type">
+                                                            
+                                                           <span
+                                                                                                     class="slds-assistive-text"> Price type</span>
+                                                        </div>
+                                                    </td>
+                                                    <td width="20%" align="center">
+                                                        <div class="slds-col" onmouseover="{!c.display}"
+                                                             onmouseout="{!c.displayOut}" title="Currency">
+                                                            
+                                                            {!item.currencyObj} <span class="slds-assistive-text">Currency</span>
+                                                        </div>
+                                                    </td>
+                                                    <td width="20%" align="center">
+                                                        <div class="slds-col" onmouseover="{!c.display}"
+                                                             onmouseout="{!c.displayOut}" title="List Price">
+                                                            
+                                                            {!item.recurringCharge } <span
+                                                                                           class="slds-assistive-text">List Price</span>
+                                                        </div>
+                                                        
+                                                    </td>   <aura:if isTrue="{!item.packagedPriced == false}">
+                                                    <td width="10%" align="center">
+                                                        <div class="slds-col" onmouseover="{!c.display}" style="width: 110px;"
+                                                             onmouseout="{!c.displayOut}" title="Discount">
+                                                            <!--previous decimal value is two decimals-->
+                                                            <ui:inputText aura:id="priceOverrideRC"
+                                                                          placeholder=""
+                                                                          value="{!item.rcdiscountedValue}" class="input"
+                                                                          maxlength="5" size="10" change="{!c.priceOverrideRC}">
+                                                                
+                                                            </ui:inputText>
+                                                            <!-- changed decimal value from two decimals to four decimals-->
+                                                             <!--<ui:inputText aura:id="priceOverrideRC"
+                                                                          placeholder="{!$Label.c.Accordian_Recursive_NRCMsg}"
+                                                                          value="{!item.rcdiscountedValue}" class="input"
+                                                                          maxlength="7" size="12" change="{!c.priceOverrideRC}">
+                                                                
+                                                            </ui:inputText>-->
+                                                           
+                                                            <span class="slds-assistive-text">Discount</span>
+                                                        </div>
+                                                        
+                                                    </td>
+                                                    <td width="15%" align="center">
+                                                        <div class="slds-col" style="margin-top: -19px;padding-left: 5px;"
+                                                             onmouseover="{!c.display}" onmouseout="{!c.displayOut}"
+                                                             title="Discount Type" >
+                                                            <lightning:select aura:id="priceOverrideRCDiscType"
+                                                                              variant="label-hidden" value="{!item.rcdiscountType}"
+                                                                              onchange="{!c.priceOverrideRC}">
+                                                                <option text="Select" value="" />
+                                                                <option text="Absolute" value="Absolute" />
+                                                                <option text="%" value="%" />
+                                                               <option text="Override" value="Override" /> 
+                                                            </lightning:select>
+                                                            <span class="slds-assistive-text">Discount Type</span>
+                                                        </div>
+                                                    </td>
+                                                    <td width="5%" align="center"><lightning:input
+                                                                                                    aura:id="hiddenForPriceRC"
+                                                                                                    name="{!v.con.key+'#'+item.name}"
+                                                                                                    value="{!item.recurringCharge+'#'+item.rcvariableprice}"
+                                                                                                    required="true" class="slds-hidden" /></td>
+                                                    <td width="15%" align="center">
+                                                        
+                                                        <div class="slds-col" onmouseover="{!c.display}"
+                                                             onmouseout="{!c.displayOut}" title="Net Price">
+                                                            {!item.rcnetprice} <span class="slds-assistive-text">Net
+                                                            Price</span>
+                                                        </div>
+                                                        
+                                                    </td>
+                                                    </aura:if>
+                                                    <!--ADDON price override implementation -->
+                                                     <aura:if isTrue="{!item.isAddon == true}">
+                                                    <td width="10%" align="left">
+                                                        <div class="slds-col" onmouseover="{!c.display}" style="width: 110px;"
+                                                             onmouseout="{!c.displayOut}" title="Discount">
+                                                            <!--previous decimal value is two decimals-->
+                                                            <ui:inputText aura:id="priceOverrideRC"
+                                                                          placeholder=""
+                                                                          value="{!item.rcdiscountedValue}" class="input"
+                                                                          maxlength="5" size="10" change="{!c.priceOverrideRC}">
+                                                                
+                                                            </ui:inputText>
+                                                            <!-- changed decimal value from two decimals to four decimals-->
+                                                             <!--<ui:inputText aura:id="priceOverrideRC"
+                                                                          placeholder="{!$Label.c.Accordian_Recursive_NRCMsg}"
+                                                                          value="{!item.rcdiscountedValue}" class="input"
+                                                                          maxlength="7" size="12" change="{!c.priceOverrideRC}">
+                                                                
+                                                            </ui:inputText>-->
+                                                           
+                                                            <span class="slds-assistive-text">Discount</span>
+                                                        </div>
+                                                        
+                                                    </td>
+                                                    <td width="15%" align="left">
+                                                        <div class="slds-col" style="margin-top: -19px;padding-left: 5px;"
+                                                             onmouseover="{!c.display}" onmouseout="{!c.displayOut}"
+                                                             title="Discount Type" >
+                                                            <lightning:select aura:id="priceOverrideRCDiscType"
+                                                                              variant="label-hidden" value="{!item.rcdiscountType}"
+                                                                              onchange="{!c.priceOverrideRC}">
+                                                                <option text="Select" value="" />
+                                                                <option text="Absolute" value="Absolute" />
+                                                                <option text="%" value="%" />
+                                                                 <option text="Override" value="Override" />
+                                                            </lightning:select>
+                                                            <span class="slds-assistive-text">Discount Type</span>
+                                                        </div>
+                                                    </td>
+                                                    <td width="5%" align="center"><lightning:input
+                                                                                                    aura:id="hiddenForPriceRC"
+                                                                                                    name="{!v.con.key+'#'+item.name}"
+                                                                                                    value="{!item.recurringCharge+'#'+item.rcvariableprice}"
+                                                                                                    required="true" class="slds-hidden" /></td>
+                                                    <td width="15%" align="center">
+                                                        
+                                                        <div class="slds-col" onmouseover="{!c.display}"
+                                                             onmouseout="{!c.displayOut}" title="Net Price">
+                                                            {!item.rcnetprice} <span class="slds-assistive-text">Net
+                                                            Price</span>
+                                                        </div>
+                                                        
+                                                    </td>
+                                                    </aura:if>
+                                                    <!-- end of price override ADDON implemenation.-->
+                                                </table>
+                                            </div>
+                                        </aura:if>
+                                        
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <aura:set attribute="else">
+                                
+                                <div class="demo-only-spacing demo-only-padding">
+                                    <div class="slds-p-left_large">
+                                     <!--  <c:AccordianRecursiveFirst recursiveCheck="true"
+                                                                   forSubmit="false" con="{!item}" QLIMapOrg="{!v.QLIMap}"
+                                                                   attr="{!v.attr}" backAndForth="true"
+                                                                   dataOverrideList="{!v.overrideList}"
+                                                                   quoteRecId="{!v.quoteRecId}"
+                                                                   packageKeyofFirstLevel="{!v.packageKeyofFirstLevel}"
+                                                                   breakflag="{!v.breakflag}"
+                                                                   childBundleBreakFlag="{!v.childBundleBreakFlag}"
+                                                                   bigconMapUpdate="{!v.bigconMapUpdate}"
+                                                                   selectedService="{!v.selectedService}"
+                                                                   bigmapLength="{!v.bigmapLength}"
+                                                                   bigmapIndex="{!v.bigmapIndex}" /> -->
+                                    </div>
+                                </div>
+                            </aura:set>
+                            
+                        </aura:if>
+                    </aura:set>
+                </aura:if>
+            </aura:iteration>
+        </div>
+        
+        <aura:if isTrue="{!v.isOpen}">
+            <div role="dialog" tabindex="-1" aria-labelledby="header99"
+                 class="slds-modal slds-fade-in-open ">
+                <div class="slds-modal__container">{!v.body}</div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+        </aura:if>
+    </aura:if>
+</aura:component>
